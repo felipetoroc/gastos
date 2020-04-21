@@ -17,9 +17,6 @@ const Menu: React.FC = () => (
                 <IonItem routerLink="/Home" routerDirection="none" lines="none" >
                     <IonLabel>Lista de gastos</IonLabel>
                 </IonItem>
-                <IonItem routerLink="/Ingreso" routerDirection="none" lines="none" >
-                    <IonLabel>Ingresar Gastos</IonLabel>
-                </IonItem>
             </IonMenuToggle>
         </IonContent>
     </IonMenu>

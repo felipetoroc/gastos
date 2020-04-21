@@ -2,7 +2,7 @@ import {IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonToolbar,Io
 import React, {useState,useEffect} from 'react';
 import './Resumen.css';
 import { add } from 'ionicons/icons';
-import Ingreso from './Ingreso'
+import IngresoGasto from '../components/IngresoGasto'
 
 const Resumen: React.FC = () => {
 
@@ -27,7 +27,7 @@ const Resumen: React.FC = () => {
                 onDidDismiss={e => setPopover({show:false, evento:e})}
                 
                 >
-                    <Ingreso/>
+                    <IngresoGasto/>
                 </IonPopover>
             </IonContent>
         </IonPage>

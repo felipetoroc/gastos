@@ -4,7 +4,6 @@ import { IonApp, IonRouterOutlet, IonButtons, IonMenuButton } from '@ionic/react
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Menu from './components/Menu';
-import Ingreso from './pages/Ingreso';
 import Resumen from './pages/Resumen';
 
 /* Core CSS required for Ionic components to work properly */
@@ -36,7 +35,6 @@ const App: React.FC = () => (
 
       <IonRouterOutlet id="main">
         <Route path="/home" component={Home} exact />
-        <Route path="/Ingreso" component={Ingreso} exact />
         <Route path="/Resumen" component={Resumen} exact />
         <Route exact path="/" render={() => <Redirect to="/home" />} />
       </IonRouterOutlet>

@@ -1,6 +1,6 @@
-import {IonToast,IonRouterLink,IonItemDivider, IonList,IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonItem, IonInput,IonRow, IonCol, IonGrid } from '@ionic/react';
-import React , {useState, useEffect} from 'react';
-import './Ingreso.css';
+import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
+import React , {useState} from 'react';
+import './IngresoGasto.css';
 import {db} from '../firebaseConfig'
 
 const Ingreso: React.FC = () => {
