@@ -1,9 +1,9 @@
 import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
 import React , {useState} from 'react';
-import './IngresoGasto.css';
+import './IngresoGastoFijo.css';
 import {db} from '../firebaseConfig'
 
-const IngresoGasto: React.FC = () => {
+const IngresoGastoFijo: React.FC = () => {
   const [mensaje,setMensaje] = useState('');
   const [texto,setTexto] = useState('');
   const [monto,setMonto] = useState('');
@@ -11,12 +11,12 @@ const IngresoGasto: React.FC = () => {
 
   const agregarGasto = () => {
     try{
-      db.collection("gastos").add({
+      db.collection("gastos_fijos").add({
         descripcion: texto,
         monto: monto
       });
       setShowtoast(true)
-      setMensaje("Gasto ingresado correctamente");
+      setMensaje("Gasto fijo ingresado correctamente");
     }catch(error){
       setMensaje(error)
     }
@@ -53,4 +53,4 @@ const IngresoGasto: React.FC = () => {
   );
 };
 
-export default IngresoGasto;
+export default IngresoGastoFijo;
