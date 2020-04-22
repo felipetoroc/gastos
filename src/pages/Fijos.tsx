@@ -7,10 +7,12 @@ import IngresoGastoFijo from '../components/IngresoGastoFijo'
 
 const Fijos: React.FC = () => {
   const listaVacia = [] as any[]
-  const [listaGastoFijo, setListaGastoFijo] = useState(listaVacia);
+  const [listaGastoFijo,setListaGastoFijo] = useState(listaVacia);
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
-  
+
+
   useEffect(() => {
+  
     db.collection("gastos_fijos").onSnapshot((querySnapshot) => {
         console.log("vacia arreglo")
         setListaGastoFijo(listaVacia)
