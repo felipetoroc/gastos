@@ -4,6 +4,13 @@ import './IngresoGasto.css';
 import {add} from 'ionicons/icons';
 import {db,agregar} from '../firebaseConfig'
 
+export const agregarCategoria = (nombre: string) =>{
+  if(nombre!==''){
+    const id = agregar({nombre_categoria:nombre},"gastos_categorias");
+    console.log(id)
+  }
+}
+
 const IngresoGasto: React.FC = () => {
   const listaVacia = [] as any[]
   const [listaCategoria, setListaCategoria] = useState(listaVacia)
@@ -58,13 +65,6 @@ const IngresoGasto: React.FC = () => {
       setMensaje(error)
     }
   };
-
-  const agregarCategoria = (nombre: string) =>{
-    if(nombre!==''){
-      const id = agregar({nombre_categoria:nombre},"gastos_categorias");
-      console.log(id)
-    }
-  }
 
   const InputAlert = () => {
     return(
@@ -123,21 +123,21 @@ const IngresoGasto: React.FC = () => {
             </IonItem>
             <IonItem>
               <IonLabel>Moneda utilizada</IonLabel>
-              <IonSelect value={tipoMoneda} onIonChange={e => setTipoMoneda(e.detail.value)}>
+              <IonSelect value={tipoMoneda} onIonChange={e => setTipoMoneda(e.detail.value)} interface="popover">
                 <IonSelectOption value="credito">Crédito</IonSelectOption>
                 <IonSelectOption value="efectivo">Efectivo</IonSelectOption>
               </IonSelect>
             </IonItem>
             <IonItem>
               <IonLabel>Tipo de gasto</IonLabel>
-              <IonSelect value={tipoGasto} onIonChange={e => setTipoGasto(e.detail.value)}>
+              <IonSelect value={tipoGasto} onIonChange={e => setTipoGasto(e.detail.value)} interface="popover">
                 <IonSelectOption value="variable">Variable</IonSelectOption>
                 <IonSelectOption value="fijo">Fijo</IonSelectOption>
               </IonSelect>
             </IonItem>
             <IonItem>
               <IonLabel>Categoria gasto</IonLabel>
-              <IonSelect value={categoria} onIonChange={e => setCategoria(e.detail.value)}>
+              <IonSelect value={categoria} onIonChange={e => setCategoria(e.detail.value)} interface="popover">
               {listaCategoria.map((cate,i) => (
                 <IonSelectOption key={i} value={cate.nombre}>{cate.nombre}</IonSelectOption>
                 

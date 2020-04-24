@@ -7,6 +7,7 @@ import Menu from './components/Menu';
 import Resumen from './pages/Resumen';
 import Mantenedor from './pages/Mantenedor';
 import Fijos from './pages/Fijos';
+import Categorias from './pages/Categorias'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,6 +41,7 @@ const App: React.FC = () => (
         <Route path="/Resumen" component={Resumen} exact />
         <Route path="/Mantenedor" component={Mantenedor} exact />
         <Route path="/Fijos" component={Fijos} exact />
+        <Route path="/Categorias" component={Categorias} exact />
         <Route exact path="/" render={() => <Redirect to="/home" />} />
       </IonRouterOutlet>
     </IonReactRouter>

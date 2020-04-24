@@ -1,0 +1,6 @@
+ion-item ion-input{
+    text-align: right;
+}
+ion-list ion-item ion-title ion-label{
+    text-align: left;
+}

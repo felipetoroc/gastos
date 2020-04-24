@@ -1,0 +1,6 @@
+ion-content ion-grid{
+    padding-top:20px
+}
+ion-list ion-item ion-title ion-label{
+    text-align: right;
+}

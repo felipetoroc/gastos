@@ -1,5 +1,5 @@
 import React from 'react';
-import {IonLabel,IonMenuToggle , IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonMenu } from '@ionic/react';
+import {IonItemOption,IonLabel,IonMenuToggle , IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonMenu } from '@ionic/react';
 import './Menu.css';
 
 const Menu: React.FC = () => (
@@ -16,6 +16,12 @@ const Menu: React.FC = () => (
                 </IonItem>
                 <IonItem routerLink="/Home" routerDirection="none" lines="none" >
                     <IonLabel>Lista de gastos</IonLabel>
+                </IonItem>
+                <IonItem routerLink="/Fijos" routerDirection="none" lines="none" >
+                    <IonLabel>Gastos fijos</IonLabel>
+                </IonItem>
+                <IonItem routerLink="/Mantenedor" routerDirection="none" lines="none" >
+                    <IonLabel>Configuración</IonLabel>
                 </IonItem>
             </IonMenuToggle>
         </IonContent>

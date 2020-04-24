@@ -1,7 +1,8 @@
-import {IonHeader, IonContent,IonToolbar, IonTitle, IonPage,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
+import {IonIcon,IonButtons,IonText,IonLabel,IonHeader, IonContent,IonToolbar, IonTitle, IonPage,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
 import React , {useState,useEffect} from 'react';
 import './Mantenedor.css';
 import {db,agregar,actualizar} from '../firebaseConfig'
+import { add,play } from 'ionicons/icons';
 
 
 const Mantenedor: React.FC = () => {
@@ -60,41 +61,51 @@ const Mantenedor: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Información importante</IonTitle>
+                    <IonTitle>Configuración</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonContent>
+            <IonContent className="ion-padding">
                 <IonList>
-                    <IonItemDivider>Fecha facturación TC</IonItemDivider>
                     <IonItem>
+                        <IonTitle>
+                            <IonLabel>Información inicial</IonLabel>
+                        </IonTitle>
+                        <IonButtons slot="end">
+                            Lista de categorias<IonButton routerLink="/Categorias"><IonIcon icon={play} /></IonButton>
+                        </IonButtons>
+                    </IonItem>
+                </IonList>
+                <IonList>
+                    <IonItem>
+                    <IonLabel>Fecha facturación TC</IonLabel>
                     <IonInput
                         value={facturacion} 
                         onIonChange={(e: any) => setFacturacion(e.target.value)}>
                     </IonInput>
                     </IonItem>
-                    <IonItemDivider>Sueldo</IonItemDivider>
                     <IonItem>
-                    <IonInput
+                    <IonLabel>Sueldo</IonLabel>
+                    <IonInput slot="end"
                         value={sueldo} 
                         onIonChange={(e: any) => setSueldo(e.target.value)}>
                     </IonInput>
                     </IonItem>
-                    <IonItemDivider>Efectivo inicial</IonItemDivider>
                     <IonItem>
+                    <IonLabel>Efectivo inicial</IonLabel>
                     <IonInput
                         value={efectivo} 
                         onIonChange={(e: any) => setEfectivo(e.target.value)}>
                     </IonInput>
                     </IonItem>
-                    <IonItemDivider>Cupo tarjeta de crédito</IonItemDivider>
                     <IonItem>
+                    <IonLabel>Cupo tarjeta de crédito</IonLabel>
                     <IonInput
                         value={cupo} 
                         onIonChange={(e: any) => setCupo(e.target.value)}>
                     </IonInput>
                     </IonItem>
-                    <IonItemDivider>Dia de pago</IonItemDivider>
                     <IonItem>
+                    <IonLabel>Dia de pago</IonLabel>
                     <IonInput
                         value={pago} 
                         onIonChange={(e: any) => setPago(e.target.value)}>
