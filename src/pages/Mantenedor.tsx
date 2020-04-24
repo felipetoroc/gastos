@@ -1,7 +1,8 @@
 import {IonHeader, IonContent,IonToolbar, IonTitle, IonPage,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
 import React , {useState,useEffect} from 'react';
 import './Mantenedor.css';
-import {db} from '../firebaseConfig'
+import {db,agregar,actualizar} from '../firebaseConfig'
+
 
 const Mantenedor: React.FC = () => {
     const [showtoast,setShowtoast] = useState(false);
@@ -12,7 +13,7 @@ const Mantenedor: React.FC = () => {
     const [cupo,setCupo] = useState('');
     const [pago,setPago] = useState('');
     const [idDoc,setIdDoc] = useState<any>();
-  
+
     useEffect(() => {
         db.collection("info_importante").onSnapshot((querySnapshot) => {
             querySnapshot.forEach(doc => {
@@ -32,25 +33,24 @@ const Mantenedor: React.FC = () => {
 
     const agregarDatos = () => {
         if(!idDoc){
-            var docid = db.collection("info_importante").doc();
-            docid.set({
+            var docid = agregar({
                 dia_facturacion: facturacion,
                 monto_sueldo: sueldo,
                 efectivo_inicial: efectivo,
                 cupo_tarjeta: cupo,
                 dia_pago: pago
-            });
+            },"info_importante");
             setShowtoast(true)
             setMensaje("Datos iniciales agregados");
-            setIdDoc(docid.id);
+            setIdDoc(docid);
         }else{
-            db.collection("info_importante").doc(idDoc).set({
+            actualizar({
                 dia_facturacion: facturacion,
                 monto_sueldo: sueldo,
                 efectivo_inicial: efectivo,
                 cupo_tarjeta: cupo,
                 dia_pago: pago
-            });
+            },"info_importante",idDoc);
             setShowtoast(true)
             setMensaje("Datos iniciales modificados");
         }

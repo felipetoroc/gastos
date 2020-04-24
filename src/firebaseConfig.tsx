@@ -1,4 +1,8 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/firestore'
+import {useState} from 'react'
+
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyABrLqUG3wIcAnelM5kv4MLJDnebu5kng8",
@@ -14,7 +18,40 @@ firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore()
 
+export function eliminar(id: string ,coleccion: string) {
+  db.collection(coleccion).doc(id).delete();
+}
 
+export function agregar(data: any,coleccion: string){
+  try{
+      var docid = db.collection(coleccion).doc();
+      docid.set(data)
+      return docid.id;
+  }catch(error){
+    console.log(error)
+  }
+}
+
+export function actualizar(data: any,coleccion: string, id: string){
+  try{
+    db.collection(coleccion).doc(id).set(data);
+  }catch(error){
+    console.log(error)
+  }
+}
+
+export function mostrar(coleccion: string){
+  db.collection(coleccion).get().then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+        if(doc.exists){
+          console.log(doc.id, " => ", doc.data());
+        }else{
+          console.log("no hay info seteada")
+        }
+        
+    });
+  });
+}
 
 
 
