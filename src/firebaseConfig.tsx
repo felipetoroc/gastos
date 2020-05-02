@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore'
 import {useState} from 'react'
+import { IonLabel } from '@ionic/react';
 
 
 
@@ -40,6 +41,8 @@ export function actualizar(data: any,coleccion: string, id: string){
   }
 }
 
+
+//aun no funciona del todo
 export function mostrar(coleccion: string){
   db.collection(coleccion).get().then(function(querySnapshot) {
     querySnapshot.forEach(function(doc) {
@@ -51,6 +54,18 @@ export function mostrar(coleccion: string){
         
     });
   });
+}
+
+
+export function totalGastos(coleccion: string):any {
+   db.collection(coleccion).get().then(function(querySnapshot){
+    var suma = 0;
+    querySnapshot.forEach(function(doc) {
+      suma = suma + parseInt(doc.data().gasto_monto)
+    });
+    
+  });
+  return
 }
 
 

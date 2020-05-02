@@ -8,7 +8,6 @@ import {agregarCategoria} from '../components/IngresoGasto'
 const Categorias: React.FC = () => {
   const listaVacia = [] as any[]
   const [lista,setLista] = useState(listaVacia);
-  const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   const [nombre, setNombre] = useState('')
 
   useEffect(() => {
@@ -36,16 +35,14 @@ const Categorias: React.FC = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-            <IonList>
-                <IonItem>
+            <IonHeader>
+                <IonToolbar>
                     <IonButtons slot="start">
                         <IonButton routerLink="/Mantenedor"><IonIcon icon={caretBack} /></IonButton>Información inicial
                     </IonButtons>
-                    <IonTitle>
-                        <IonLabel>Lista de categorias</IonLabel>
-                    </IonTitle>
-                </IonItem>
-            </IonList>
+                    <IonLabel>Lista de categorias</IonLabel>
+                </IonToolbar>
+            </IonHeader>
             <IonItem>
                 <IonLabel>Nueva categoria</IonLabel>
                 <IonInput placeholder="Ingrese nombre" value={nombre} onIonChange={(e:any) => {setNombre(e.target.value)}}>

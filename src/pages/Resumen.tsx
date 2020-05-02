@@ -1,12 +1,14 @@
-import {IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonToolbar,IonTitle,IonContent} from '@ionic/react';
+import {IonList,IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonToolbar,IonTitle,IonContent, IonLabel} from '@ionic/react';
 import React, {useState,useEffect} from 'react';
 import './Resumen.css';
 import { add } from 'ionicons/icons';
 import IngresoGasto from '../components/IngresoGasto'
+import {db,totalGastos} from '../firebaseConfig'
 
 const Resumen: React.FC = () => {
-
+  
     const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
+    
     return (
         <IonPage>
             <IonHeader>
@@ -15,7 +17,7 @@ const Resumen: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                
+               
                 <IonFab vertical="bottom" horizontal="end" slot="fixed">
                     <IonFabButton onClick={(e: any) => {e.persist();setPopover({show:true,evento:e})}}>
                         <IonIcon icon={add} />
@@ -25,9 +27,8 @@ const Resumen: React.FC = () => {
                 isOpen={popover.show}
                 event={popover.evento}
                 onDidDismiss={e => setPopover({show:false, evento:e})}
-                
                 >
-                    <IngresoGasto/>
+                <IngresoGasto/>
                 </IonPopover>
             </IonContent>
         </IonPage>

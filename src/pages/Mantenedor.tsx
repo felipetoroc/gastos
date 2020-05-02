@@ -2,7 +2,7 @@ import {IonIcon,IonButtons,IonText,IonLabel,IonHeader, IonContent,IonToolbar, Io
 import React , {useState,useEffect} from 'react';
 import './Mantenedor.css';
 import {db,agregar,actualizar} from '../firebaseConfig'
-import { add,play } from 'ionicons/icons';
+import { add,play ,caretBack} from 'ionicons/icons';
 
 
 const Mantenedor: React.FC = () => {
@@ -65,16 +65,14 @@ const Mantenedor: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                <IonList>
-                    <IonItem>
-                        <IonTitle>
-                            <IonLabel>Información inicial</IonLabel>
-                        </IonTitle>
+                <IonHeader>
+                    <IonToolbar>
+                        <IonLabel>Información importante</IonLabel>
                         <IonButtons slot="end">
-                            Lista de categorias<IonButton routerLink="/Categorias"><IonIcon icon={play} /></IonButton>
+                            Listado de categorias<IonButton routerLink="/Categorias"><IonIcon icon={play} /></IonButton>
                         </IonButtons>
-                    </IonItem>
-                </IonList>
+                    </IonToolbar>
+                </IonHeader>
                 <IonList>
                     <IonItem>
                     <IonLabel>Fecha facturación TC</IonLabel>
