@@ -15,7 +15,7 @@ const Menu: React.FC = () => (
                     <IonLabel>Resumen</IonLabel>
                 </IonItem>
                 <IonItem routerLink="/Home" routerDirection="none" lines="none" >
-                    <IonLabel>Lista de gastos</IonLabel>
+                    <IonLabel>Movimientos</IonLabel>
                 </IonItem>
                 <IonItem routerLink="/Fijos" routerDirection="none" lines="none" >
                     <IonLabel>Gastos fijos</IonLabel>

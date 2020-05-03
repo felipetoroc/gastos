@@ -1,6 +1,6 @@
 import {IonButtons,IonIcon,IonFab,IonFabButton,IonAlert,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect, IonText } from '@ionic/react';
 import React , {useState,useEffect} from 'react';
-import './IngresoGasto.css';
+import './IngresoMov.css';
 import {add} from 'ionicons/icons';
 import {db,agregar} from '../firebaseConfig'
 
@@ -11,7 +11,7 @@ export const agregarCategoria = (nombre: string) =>{
   }
 }
 
-const IngresoGasto: React.FC = () => {
+const IngresoMov: React.FC = () => {
   const listaVacia = [] as any[]
   const [listaCategoria, setListaCategoria] = useState(listaVacia)
 
@@ -23,7 +23,8 @@ const IngresoGasto: React.FC = () => {
   const [fecha, setFecha] = useState('')
   const [cuotas, setCuotas] = useState('')
   const [tipoMoneda, setTipoMoneda] = useState('')
-  const [tipoGasto, setTipoGasto] = useState('')
+  const [frecMov, setFrecMov] = useState('')
+  const [tipoMovimiento, setTipoMovimiento] = useState('')
   const [descripcion,setDescripcion] = useState('');
   const [monto,setMonto] = useState('');
   const [categoria, setCategoria] = useState('')
@@ -49,18 +50,28 @@ const IngresoGasto: React.FC = () => {
     try{
       const id = agregar(
         {
-          gasto_periodo:periodo,
-          gasto_fecha: fecha,
-          gasto_cuotas: cuotas,
-          gasto_tipo_moneda: tipoMoneda,
-          gasto_tipo_gasto: tipoGasto,
-          gasto_descripcion: descripcion,
-          gasto_monto: monto,
-          gasto_categoria: categoria
-        },"gastos");
+          mov_periodo:periodo,
+          mov_fecha: fecha,
+          mov_cuotas: cuotas,
+          mov_tipo_moneda: tipoMoneda,
+          mov_frec_mov: frecMov,
+          mov_tipo_mov: tipoMovimiento,
+          mov_descripcion: descripcion,
+          mov_monto: monto,
+          mov_categoria: categoria
+        },"movimientos");
       console.log(id)
       setShowtoast(true)
-      setMensaje("Gasto ingresado correctamente");
+      setFecha('')
+      setPeriodo('')
+      setCuotas('')
+      setTipoMoneda('')
+      setFrecMov('')
+      setTipoMovimiento('')
+      setCategoria('')
+      setDescripcion('')
+      setMonto('')
+      setMensaje("Movimiento ingresado correctamente");
     }catch(error){
       setMensaje(error)
     }
@@ -129,14 +140,21 @@ const IngresoGasto: React.FC = () => {
               </IonSelect>
             </IonItem>
             <IonItem>
-              <IonLabel>Tipo de gasto</IonLabel>
-              <IonSelect value={tipoGasto} onIonChange={e => setTipoGasto(e.detail.value)} interface="popover">
+              <IonLabel>Frecuencia del movimiento</IonLabel>
+              <IonSelect value={frecMov} onIonChange={e => setFrecMov(e.detail.value)} interface="popover">
                 <IonSelectOption value="variable">Variable</IonSelectOption>
                 <IonSelectOption value="fijo">Fijo</IonSelectOption>
               </IonSelect>
             </IonItem>
             <IonItem>
-              <IonLabel>Categoria gasto</IonLabel>
+              <IonLabel>Tipo de movimiento</IonLabel>
+              <IonSelect value={tipoMovimiento} onIonChange={e => setTipoMovimiento(e.detail.value)} interface="popover">
+                <IonSelectOption value="ingreso">Ingreso</IonSelectOption>
+                <IonSelectOption value="gasto">Gasto</IonSelectOption>
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Categoria</IonLabel>
               <IonSelect value={categoria} onIonChange={e => setCategoria(e.detail.value)} interface="popover">
               {listaCategoria.map((cate,i) => (
                 <IonSelectOption key={i} value={cate.nombre}>{cate.nombre}</IonSelectOption>
@@ -178,4 +196,4 @@ const IngresoGasto: React.FC = () => {
   );
 };
 
-export default IngresoGasto;
+export default IngresoMov;

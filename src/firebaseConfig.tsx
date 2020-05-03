@@ -61,7 +61,7 @@ export function totalGastos(coleccion: string):any {
    db.collection(coleccion).get().then(function(querySnapshot){
     var suma = 0;
     querySnapshot.forEach(function(doc) {
-      suma = suma + parseInt(doc.data().gasto_monto)
+      suma = suma + parseInt(doc.data().mov_monto)
     });
     
   });

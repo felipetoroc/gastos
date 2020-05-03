@@ -3,7 +3,7 @@ import React, {useState,useEffect} from 'react';
 import './Categorias.css';
 import {db,eliminar,agregar} from '../firebaseConfig'
 import { add,play,caretBack } from 'ionicons/icons';
-import {agregarCategoria} from '../components/IngresoGasto'
+import {agregarCategoria} from '../components/IngresoMov'
 
 const Categorias: React.FC = () => {
   const listaVacia = [] as any[]

@@ -5,52 +5,52 @@ import {db} from '../firebaseConfig'
 
 const Home: React.FC = () => {
   const listaVacia = [] as any[]
-  const [listaGasto, setListaGasto] = useState(listaVacia);
+  const [listaMov, setlistaMov] = useState(listaVacia);
   const [listaPeriodo, setListaPeriodo] = useState(listaVacia);
   const [selectedPeriodo, setSelectedPeriodo] = useState('')
 
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
   useEffect(() => {
-    db.collection("gastos").onSnapshot((querySnapshot) => {
+    db.collection("movimientos").onSnapshot((querySnapshot) => {
         console.log("vacia arreglo")
-        setListaGasto(listaVacia)
+        setlistaMov(listaVacia)
         setListaPeriodo(listaVacia)
         var prevPeriodo = '';
         querySnapshot.forEach(doc => {
-            var splitFecha = doc.data().gasto_fecha.split("T");
+            var splitFecha = doc.data().mov_fecha.split("T");
             var objeto = {
                 id:doc.id,
-                categoria:doc.data().gasto_categoria,
-                cuotas:doc.data().gasto_cuotas,
-                descripcion:doc.data().gasto_descripcion,
+                categoria:doc.data().mov_categoria,
+                cuotas:doc.data().mov_cuotas,
+                descripcion:doc.data().mov_descripcion,
                 fecha:splitFecha[0],
-                monto:doc.data().gasto_monto,
-                periodo:doc.data().gasto_periodo,
-                tipo_gasto:doc.data().gasto_tipo_gasto,
-                tipo_moneda:doc.data().gasto_tipo_moneda
+                monto:doc.data().mov_monto,
+                periodo:doc.data().mov_periodo,
+                frecuencia:doc.data().mov_frec_mov,
+                tipo_moneda:doc.data().mov_tipo_moneda
             }
-            setListaGasto(prevListaGasto => [...prevListaGasto, objeto]);
-            if(prevPeriodo !==doc.data().gasto_periodo){
-                setListaPeriodo(prevListaPeriodo => [...prevListaPeriodo, {periodo: doc.data().gasto_periodo}])
+            setlistaMov(prevlistaMov => [...prevlistaMov, objeto]);
+            if(prevPeriodo !==doc.data().mov_periodo){
+                setListaPeriodo(prevListaPeriodo => [...prevListaPeriodo, {periodo: doc.data().mov_periodo}])
             }
-            prevPeriodo = doc.data().gasto_periodo;
+            prevPeriodo = doc.data().mov_periodo;
             
             console.log("carga arreglo")
         });
     })
   },[])
 
-  function eliminarGasto(id: string){
-    setListaGasto(listaVacia)
-    db.collection("gastos").doc(id).delete();
+  function eliminarMov(id: string){
+    setlistaMov(listaVacia)
+    db.collection("movimientos").doc(id).delete();
   }
 
   return (
     <IonPage>
         <IonHeader>
             <IonToolbar>
-                <IonTitle>Lista gastos</IonTitle>
+                <IonTitle>Lista movimientos</IonTitle>
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
@@ -70,14 +70,14 @@ const Home: React.FC = () => {
                     <IonCol>Descripcion</IonCol>
                     <IonCol>Monto</IonCol>
                 </IonRow>
-                {listaGasto.map((gasto,i) => {
-                    if(gasto.periodo === selectedPeriodo){
+                {listaMov.map((mov,i) => {
+                    if(mov.periodo === selectedPeriodo){
                         return(
                             <IonRow key={i} onClick={(e: any) => {e.persist();setPopover({show:true,evento:e})}} >
-                                <IonCol>{gasto.fecha}</IonCol>
-                                <IonCol>{gasto.categoria}</IonCol>
-                                <IonCol>{gasto.descripcion}</IonCol>
-                                <IonCol>{gasto.monto}</IonCol>
+                                <IonCol>{mov.fecha}</IonCol>
+                                <IonCol>{mov.categoria}</IonCol>
+                                <IonCol>{mov.descripcion}</IonCol>
+                                <IonCol>{mov.monto}</IonCol>
                                 <IonPopover
                                     isOpen={popover.show}
                                     event={popover.evento}
@@ -86,15 +86,15 @@ const Home: React.FC = () => {
                                     <IonList>
                                         <IonTitle>Detalles</IonTitle>
                                         <IonItem>
-                                            Moneda usada: {gasto.tipo_moneda}
+                                            Moneda usada: {mov.tipo_moneda}
                                         </IonItem>
                                         <IonItem>
-                                            Tipo de gasto: {gasto.tipo_gasto}
+                                            Frecuencia: {mov.frecuencia}
                                         </IonItem>
                                         <IonItem>
-                                            Cantidad de cuotas: {gasto.cuotas}
+                                            Cantidad de cuotas: {mov.cuotas}
                                         </IonItem>
-                                        <IonButton onClick={() => eliminarGasto(gasto.id)} expand="block" color="danger">
+                                        <IonButton onClick={() => eliminarMov(mov.id)} expand="block" color="danger">
                                             Eliminar
                                         </IonButton>
                                     </IonList>

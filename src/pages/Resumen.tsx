@@ -2,7 +2,7 @@ import {IonList,IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonTo
 import React, {useState,useEffect} from 'react';
 import './Resumen.css';
 import { add } from 'ionicons/icons';
-import IngresoGasto from '../components/IngresoGasto'
+import IngresoMov from '../components/IngresoMov'
 import {db,totalGastos} from '../firebaseConfig'
 
 const Resumen: React.FC = () => {
@@ -28,7 +28,7 @@ const Resumen: React.FC = () => {
                 event={popover.evento}
                 onDidDismiss={e => setPopover({show:false, evento:e})}
                 >
-                <IngresoGasto/>
+                <IngresoMov/>
                 </IonPopover>
             </IonContent>
         </IonPage>
