@@ -1,7 +1,8 @@
-import {IonText,IonPopover,IonButton,IonLabel,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonSelect, IonSelectOption } from '@ionic/react';
+import {IonText,IonPopover,IonButton,IonLabel,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonSelect, IonSelectOption, IonButtons, IonIcon } from '@ionic/react';
 import React, {useState,useEffect} from 'react';
 import './Home.css';
 import {db} from '../firebaseConfig'
+import { add,trash } from 'ionicons/icons';
 
 const Home: React.FC = () => {
   const listaVacia = [] as any[]
@@ -12,26 +13,28 @@ const Home: React.FC = () => {
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
   useEffect(() => {
-    db.collection("movimientos").onSnapshot((querySnapshot) => {
+    db.collection("movimientos").orderBy("mov_periodo","asc").onSnapshot((querySnapshot) => {
         console.log("vacia arreglo")
         setlistaMov(listaVacia)
         setListaPeriodo(listaVacia)
         var prevPeriodo = '';
         querySnapshot.forEach(doc => {
             var splitFecha = doc.data().mov_fecha.split("T");
+            var splitFecha2 = splitFecha[0].split("-")
             var objeto = {
                 id:doc.id,
                 categoria:doc.data().mov_categoria,
                 cuotas:doc.data().mov_cuotas,
                 descripcion:doc.data().mov_descripcion,
-                fecha:splitFecha[0],
+                fecha:splitFecha2[1]+"-"+splitFecha2[2],
                 monto:doc.data().mov_monto,
                 periodo:doc.data().mov_periodo,
                 frecuencia:doc.data().mov_frec_mov,
-                tipo_moneda:doc.data().mov_tipo_moneda
+                tipo_moneda:doc.data().mov_tipo_moneda,
+                tipo_movimiento:doc.data().mov_tipo_mov
             }
             setlistaMov(prevlistaMov => [...prevlistaMov, objeto]);
-            if(prevPeriodo !==doc.data().mov_periodo){
+            if(prevPeriodo != doc.data().mov_periodo){
                 setListaPeriodo(prevListaPeriodo => [...prevListaPeriodo, {periodo: doc.data().mov_periodo}])
             }
             prevPeriodo = doc.data().mov_periodo;
@@ -58,52 +61,44 @@ const Home: React.FC = () => {
                 <IonLabel>Selecciona un periodo</IonLabel>
                 <IonSelect value={selectedPeriodo} onIonChange={(e:any) => setSelectedPeriodo(e.target.value)} interface="popover">
                     {listaPeriodo.map((per,i) => (
-                        <IonSelectOption key={i} value={per.periodo}>{per.periodo}</IonSelectOption>
+                        <IonSelectOption key={i} value={per.periodo}>{i}</IonSelectOption>
                     ))}
                 </IonSelect>
             </IonItem>
-            <IonGrid>
-                <IonRow>
-                    
-                    <IonCol>Fecha</IonCol>
-                    <IonCol>Categoria</IonCol>
-                    <IonCol>Descripcion</IonCol>
-                    <IonCol>Monto</IonCol>
-                </IonRow>
-                {listaMov.map((mov,i) => {
-                    if(mov.periodo === selectedPeriodo){
-                        return(
-                            <IonRow key={i} onClick={(e: any) => {e.persist();setPopover({show:true,evento:e})}} >
-                                <IonCol>{mov.fecha}</IonCol>
-                                <IonCol>{mov.categoria}</IonCol>
-                                <IonCol>{mov.descripcion}</IonCol>
-                                <IonCol>{mov.monto}</IonCol>
-                                <IonPopover
-                                    isOpen={popover.show}
-                                    event={popover.evento}
-                                    onDidDismiss={e => setPopover({show:false, evento:e})}
-                                >
-                                    <IonList>
-                                        <IonTitle>Detalles</IonTitle>
-                                        <IonItem>
-                                            Moneda usada: {mov.tipo_moneda}
-                                        </IonItem>
-                                        <IonItem>
-                                            Frecuencia: {mov.frecuencia}
-                                        </IonItem>
-                                        <IonItem>
-                                            Cantidad de cuotas: {mov.cuotas}
-                                        </IonItem>
-                                        <IonButton onClick={() => eliminarMov(mov.id)} expand="block" color="danger">
-                                            Eliminar
-                                        </IonButton>
-                                    </IonList>
-                                </IonPopover>
-                            </IonRow>
-                        )
-                    }
-                })}
-            </IonGrid>
+            <IonItem>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Fecha</td>
+                            <td>Descripcion</td>
+                            <td>Cuotas</td>
+                            <td>Monto</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listaMov.map((mov,i) => {
+                            if(mov.periodo === selectedPeriodo){
+                                return(
+                                    <tr key={i} >
+                                        <td><div>{mov.fecha}</div></td>
+                                        <td><div>{mov.descripcion}</div></td>
+                                        <td><div>{mov.cuotas}</div></td>
+                                        <td>{mov.tipo_movimiento === "gasto" ? <div style={{color:"red"}}>{"-"+Math.round(mov.monto)}</div>:<div style={{color:"green"}}>{Math.round(mov.monto)}</div>}</td>
+                                        <td>
+                                            <div>
+                                            <IonButtons>
+                                                <IonButton onClick={()=> eliminarMov(mov.id)}><IonIcon icon={trash}></IonIcon></IonButton>
+                                            </IonButtons>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            }
+                        })}
+                    </tbody>
+                </table>
+            </IonItem>
             
         </IonContent>
     </IonPage>

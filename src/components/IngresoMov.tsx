@@ -48,19 +48,39 @@ const IngresoMov: React.FC = () => {
 
   const agregarGasto = () => {
     try{
-      const id = agregar(
-        {
-          mov_periodo:periodo,
-          mov_fecha: fecha,
-          mov_cuotas: cuotas,
-          mov_tipo_moneda: tipoMoneda,
-          mov_frec_mov: frecMov,
-          mov_tipo_mov: tipoMovimiento,
-          mov_descripcion: descripcion,
-          mov_monto: monto,
-          mov_categoria: categoria
-        },"movimientos");
-      console.log(id)
+      if(parseInt(cuotas)<=1){
+        const id = agregar(
+          {
+            mov_periodo:periodo,
+            mov_fecha: fecha,
+            mov_cuotas: cuotas,
+            mov_tipo_moneda: tipoMoneda,
+            mov_frec_mov: frecMov,
+            mov_tipo_mov: tipoMovimiento,
+            mov_descripcion: descripcion,
+            mov_monto: monto,
+            mov_categoria: categoria
+          },"movimientos");
+      }else{
+        var contador = 0;
+        for(var i=parseInt(periodo);i<parseInt(periodo)+parseInt(cuotas);i++){
+         
+          const id = agregar(
+            {
+              mov_periodo:i,
+              mov_fecha: fecha,
+              mov_cuotas: parseInt(cuotas)-contador,
+              mov_tipo_moneda: tipoMoneda,
+              mov_frec_mov: frecMov,
+              mov_tipo_mov: tipoMovimiento,
+              mov_descripcion: descripcion,
+              mov_monto: parseInt(monto)/parseInt(cuotas),
+              mov_categoria: categoria
+            },"movimientos");
+          contador++;
+        }
+      }
+     
       setShowtoast(true)
       setFecha('')
       setPeriodo('')
