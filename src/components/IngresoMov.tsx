@@ -20,7 +20,7 @@ const IngresoMov: React.FC = () => {
 
   const [mensaje,setMensaje] = useState('');
   const [periodo, setPeriodo] = useState('')
-  const [fecha, setFecha] = useState('')
+  const [fecha, setFecha] = useState(new Date().toISOString())
   const [cuotas, setCuotas] = useState('')
   const [tipoMoneda, setTipoMoneda] = useState('')
   const [frecMov, setFrecMov] = useState('')
@@ -134,7 +134,7 @@ const IngresoMov: React.FC = () => {
 
   return (
     <>
-          <IonList>
+          <IonList >
             <IonTitle className="ion-padding">Gasto nuevo</IonTitle>
             <IonItem>
               <IonLabel>Fecha compra</IonLabel>

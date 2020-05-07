@@ -42,7 +42,7 @@ const App: React.FC = () => (
         <Route path="/Mantenedor" component={Mantenedor} exact />
         <Route path="/Fijos" component={Fijos} exact />
         <Route path="/Categorias" component={Categorias} exact />
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
+        <Route exact path="/" render={() => <Redirect to="/Resumen" />} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
