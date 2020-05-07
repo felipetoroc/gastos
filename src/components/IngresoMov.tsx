@@ -63,18 +63,20 @@ const IngresoMov: React.FC = () => {
           },"movimientos");
       }else{
         var contador = 0;
+        var montoCuota = parseInt(monto)/parseInt(cuotas)
         for(var i=parseInt(periodo);i<parseInt(periodo)+parseInt(cuotas);i++){
-         
+          var cuotasRestantes = parseInt(cuotas)-contador
+
           const id = agregar(
             {
-              mov_periodo:i,
+              mov_periodo:i.toString(),
               mov_fecha: fecha,
-              mov_cuotas: parseInt(cuotas)-contador,
+              mov_cuotas: cuotasRestantes.toString(),
               mov_tipo_moneda: tipoMoneda,
               mov_frec_mov: frecMov,
               mov_tipo_mov: tipoMovimiento,
               mov_descripcion: descripcion,
-              mov_monto: parseInt(monto)/parseInt(cuotas),
+              mov_monto: montoCuota.toString(),
               mov_categoria: categoria
             },"movimientos");
           contador++;

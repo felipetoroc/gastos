@@ -14,10 +14,24 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     db.collection("movimientos").orderBy("mov_periodo","asc").onSnapshot((querySnapshot) => {
-        console.log("vacia arreglo")
-        setlistaMov(listaVacia)
         setListaPeriodo(listaVacia)
         var prevPeriodo = '';
+        querySnapshot.forEach(doc => {
+            var objeto = {
+                periodo:doc.data().mov_periodo,
+            }
+            if(prevPeriodo != objeto.periodo){
+                setListaPeriodo(prevListaPeriodo => [...prevListaPeriodo, {periodo: objeto.periodo}])
+            }
+            prevPeriodo = objeto.periodo
+            console.log(prevPeriodo)
+        });
+    })
+  },[])
+
+  useEffect(() => {
+    db.collection("movimientos").onSnapshot((querySnapshot) => {
+        setlistaMov(listaVacia)
         querySnapshot.forEach(doc => {
             var splitFecha = doc.data().mov_fecha.split("T");
             var splitFecha2 = splitFecha[0].split("-")
@@ -26,6 +40,7 @@ const Home: React.FC = () => {
                 categoria:doc.data().mov_categoria,
                 cuotas:doc.data().mov_cuotas,
                 descripcion:doc.data().mov_descripcion,
+                ano:splitFecha2[0],
                 fecha:splitFecha2[1]+"-"+splitFecha2[2],
                 monto:doc.data().mov_monto,
                 periodo:doc.data().mov_periodo,
@@ -34,12 +49,6 @@ const Home: React.FC = () => {
                 tipo_movimiento:doc.data().mov_tipo_mov
             }
             setlistaMov(prevlistaMov => [...prevlistaMov, objeto]);
-            if(prevPeriodo != doc.data().mov_periodo){
-                setListaPeriodo(prevListaPeriodo => [...prevListaPeriodo, {periodo: doc.data().mov_periodo}])
-            }
-            prevPeriodo = doc.data().mov_periodo;
-            
-            console.log("carga arreglo")
         });
     })
   },[])
@@ -61,9 +70,16 @@ const Home: React.FC = () => {
                 <IonLabel>Selecciona un periodo</IonLabel>
                 <IonSelect value={selectedPeriodo} onIonChange={(e:any) => setSelectedPeriodo(e.target.value)} interface="popover">
                     {listaPeriodo.map((per,i) => (
-                        <IonSelectOption key={i} value={per.periodo}>{i}</IonSelectOption>
+                        <IonSelectOption key={i} value={per.periodo}>{per.periodo}</IonSelectOption>
                     ))}
                 </IonSelect>
+            </IonItem>
+            <IonItem>
+                <IonList>
+                    <IonLabel>{listaMov.map((mov,i) => (
+                        mov.ano
+                    ))}</IonLabel>
+                </IonList>
             </IonItem>
             <IonItem>
                 <table>
