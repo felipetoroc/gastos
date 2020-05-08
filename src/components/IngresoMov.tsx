@@ -36,12 +36,10 @@ const IngresoMov: React.FC = () => {
 
   useEffect(()=>{
     db.collection("gastos_categorias").onSnapshot((querySnapshot) => {
-        console.log("vacia arreglo")
         setListaCategoria(listaVacia)
         querySnapshot.forEach(doc => {
             var objeto = {nombre:doc.data().nombre_categoria}
             setListaCategoria(prevListaCategoria => [...prevListaCategoria, objeto]);
-            console.log("carga arreglo")
         });
     })
   },[])
