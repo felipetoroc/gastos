@@ -2,17 +2,10 @@ ion-header ion-toolbar {
   --background: translucent;
   text-align: center;
 }
-ion-item > table thead {
-  font-weight: bold;
-}
-ion-item > table {
-  background-color: #f7f7f7;
-  border: solid 1px #ddd;
-  padding: 4px;
-}
 
 ion-item > table td{
-  background-color: #f7f7f7;
-  border: solid 1px #ddd;
-  padding: 4px;
+  padding-left: 2px;
+  padding-right: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }

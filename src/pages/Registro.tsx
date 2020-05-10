@@ -1,0 +1,116 @@
+import {IonAlert,IonIcon,IonPage,IonToolbar,IonTitle,IonHeader,IonContent,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonCard, IonLabel, IonText, NavContext } from '@ionic/react';
+import React , {useState, useEffect} from 'react';
+import {useHistory} from 'react-router-dom'
+import './Registro.css';
+import {regin} from '../firebaseConfig'
+import { checkmarkCircle, push } from 'ionicons/icons';
+import { IonReactRouter } from '@ionic/react-router';
+import { Redirect } from 'react-router';
+import Login from './Login';
+import { NavLink } from 'react-router-dom';
+import { url } from 'inspector';
+
+const Registro: React.FC = () => {
+  const history = useHistory()
+  const [correo,setCorreo] = useState('');
+  const [password,setPassword] = useState('');
+  const [rpassword,setRpassword] = useState('');
+  const [checkPass, setCheckPass] = useState(false);
+  const [error, setError] = useState('')
+
+  const [alertRegCorrecto,setAlertRegCorrecto] = useState(false)
+
+
+  useEffect(() => {
+    if(password!==''){
+        if(password!==rpassword){                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            setCheckPass(false)
+        }else{
+            setCheckPass(true)
+        }
+    }
+  },[rpassword])
+
+  async function regUser(){
+    if(checkPass===true){
+        if(password.length >= 6){
+            const res = await regin(correo,password);
+            if(res===true){
+                setAlertRegCorrecto(true)
+                setCorreo('')
+                setPassword('')
+                setRpassword('')
+                setError('')
+            }else{
+                setError("Registro fallido")
+            }
+        }else{
+            setError("Contraseña muy corta. 6 caracteres mínimo")
+        }
+    }else{
+        setError("Contraseñas no coinciden")
+    }
+  };
+
+  return (
+    <IonPage className="registro">
+        <IonHeader>
+            <IonToolbar>
+                <IonTitle>Registro de usuario</IonTitle>
+            </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <IonCard>
+            <IonList className="error">
+                <IonLabel color="danger">{error}</IonLabel>
+            </IonList>
+            <IonList>
+                <IonItem>
+                <IonInput
+                    placeholder="Correo"
+                    value={correo} 
+                    onIonChange={(e: any) => setCorreo(e.target.value)}>
+                </IonInput>
+                </IonItem>
+                <IonItem>
+                <IonInput
+                    type="password"
+                    placeholder="Contraseña"
+                    value={password} 
+                    onIonChange={(e: any) => setPassword(e.target.value)}>
+                </IonInput>
+                </IonItem>
+                <IonItem>
+                <IonInput
+                    type="password"
+                    placeholder="Repita contraseña"
+                    value={rpassword} 
+                    onIonChange={(e: any) => setRpassword(e.target.value)}>
+                </IonInput>
+                {checkPass===true?<IonIcon color="success" icon={checkmarkCircle} />:<></>}
+                </IonItem>
+            </IonList>
+            <IonList>
+                <IonButton expand="block" onClick={regUser}>Registrarse</IonButton>
+            </IonList>
+          </IonCard>
+        </IonContent>
+        <IonAlert
+            isOpen={alertRegCorrecto}
+            onDidDismiss={() => setAlertRegCorrecto(false)}
+            header={'Registro correcto!'}
+            message={'Registro correcto, ahora puede iniciar sesión'}
+            buttons={[
+            {
+                text: 'vamos!',
+                handler: () => {
+                    history.goBack();
+                }
+            }
+            ]}
+        />
+    </IonPage>
+  );
+};
+
+export default Registro;

@@ -1,4 +1,4 @@
-import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid } from '@ionic/react';
+import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonLabel } from '@ionic/react';
 import React, {useState,useEffect} from 'react';
 import './Fijos.css';
 import {db,eliminar} from '../firebaseConfig'
@@ -7,12 +7,21 @@ import IngresoGastoFijo from '../components/IngresoGastoFijo'
 
 const Fijos: React.FC = () => {
   const listaVacia = [] as any[]
+  const [total, setTotal] = useState(0)
   const [listaGastoFijo,setListaGastoFijo] = useState(listaVacia);
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   
+  useEffect(() => {
+    db.collection("gastos_fijos").onSnapshot((querySnapshot) => {
+        var sumaTotal = 0
+        querySnapshot.forEach(doc => {
+          sumaTotal += parseFloat(doc.data().monto)
+        });
+        setTotal(sumaTotal)
+    })
+  },[])
 
   useEffect(() => {
-  
     db.collection("gastos_fijos").onSnapshot((querySnapshot) => {
         console.log("vacia arreglo")
         setListaGastoFijo(listaVacia)
@@ -36,6 +45,12 @@ const Fijos: React.FC = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
+            <IonList>
+                <IonItem>
+                    <IonLabel>TOTAL GASTOS FIJOS: ${total}</IonLabel>
+                </IonItem>
+            </IonList>
+            <IonList>
             <IonRow>
                 <IonCol>Descripcion</IonCol>
                 <IonCol>Monto</IonCol>
@@ -55,6 +70,7 @@ const Fijos: React.FC = () => {
                 </IonItemSliding>
             </IonRow>
             ))}
+            </IonList>
             <IonFab vertical="bottom" horizontal="end" slot="fixed">
                 <IonFabButton onClick={(e: any) => {e.persist();setPopover({show:true,evento:e})}}>
                     <IonIcon icon={add} />

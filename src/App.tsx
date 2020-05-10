@@ -8,6 +8,9 @@ import Resumen from './pages/Resumen';
 import Mantenedor from './pages/Mantenedor';
 import Fijos from './pages/Fijos';
 import Categorias from './pages/Categorias'
+import Login from './pages/Login'
+import Registro from './pages/Registro'
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -37,6 +40,8 @@ const App: React.FC = () => (
       </IonButtons>
 
       <IonRouterOutlet id="main">
+        <Route path="/login" component={Login} exact />
+        <Route path="/registro" component={Registro} exact />
         <Route path="/home" component={Home} exact />
         <Route path="/Resumen" component={Resumen} exact />
         <Route path="/Mantenedor" component={Mantenedor} exact />

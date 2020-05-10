@@ -66,6 +66,7 @@ const Home: React.FC = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
+            <IonList>
             <IonItem>
                 <IonLabel>Selecciona un periodo</IonLabel>
                 <IonSelect value={selectedPeriodo} onIonChange={(e:any) => setSelectedPeriodo(e.target.value)} interface="popover">
@@ -74,13 +75,8 @@ const Home: React.FC = () => {
                     ))}
                 </IonSelect>
             </IonItem>
-            <IonItem>
-                <IonList>
-                    <IonLabel>{listaMov.map((mov,i) => (
-                        mov.ano
-                    ))}</IonLabel>
-                </IonList>
-            </IonItem>
+            </IonList>
+            <IonList>
             <IonItem>
                 <table>
                     <thead>
@@ -89,7 +85,7 @@ const Home: React.FC = () => {
                             <td>Descripcion</td>
                             <td>Cuotas</td>
                             <td>Monto</td>
-                            <td></td>
+                            <td>Acción</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,7 +111,7 @@ const Home: React.FC = () => {
                     </tbody>
                 </table>
             </IonItem>
-            
+            </IonList>
         </IonContent>
     </IonPage>
   )

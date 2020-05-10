@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore'
+import 'firebase/auth'
 import {useState} from 'react'
 import { IonLabel } from '@ionic/react';
 
@@ -16,6 +17,28 @@ const firebaseConfig = {
   };
 
 firebase.initializeApp(firebaseConfig);
+
+
+export async function login(correo: string, password: string){
+  try{
+    const res = await firebase.auth().signInWithEmailAndPassword(correo,password)
+    console.log(res)
+    return true
+  }catch(error){
+    console.log(error)
+    return false
+  }
+}
+
+export async function regin(correo: string, password: string){
+  try{
+    const res = await firebase.auth().createUserWithEmailAndPassword(correo,password)
+    return true;
+  }catch(error){
+    return false
+  }
+  
+}
 
 export const db = firebase.firestore()
 

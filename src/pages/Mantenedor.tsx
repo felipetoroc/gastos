@@ -58,7 +58,7 @@ const Mantenedor: React.FC = () => {
     };
 
     return (
-        <IonPage>
+        <IonPage className="mantenedor">
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>Configuración</IonTitle>

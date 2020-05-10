@@ -13,7 +13,9 @@ const IngresoGastoFijo: React.FC = () => {
     const docid = agregar({descripcion:texto,monto:monto},"gastos_fijos");
     setShowtoast(true)
     setMensaje("Gasto fijo ingresado correctamente");
-    console.log(docid)
+    setMonto('')
+    setTexto('')
+
   };
 
   return (

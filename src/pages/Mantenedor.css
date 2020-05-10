@@ -1,10 +1,10 @@
-ion-item ion-input{
+.mantenedor ion-input{
     text-align: right;
 }
-ion-content ion-header{
+.mantenedor ion-content ion-header{
     margin-bottom: 20px;
 }
 
-ion-content ion-header ion-label{
+.mantenedor ion-content ion-header ion-label{
     font-weight: bold;
 }
