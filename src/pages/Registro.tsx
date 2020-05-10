@@ -3,12 +3,7 @@ import React , {useState, useEffect} from 'react';
 import {useHistory} from 'react-router-dom'
 import './Registro.css';
 import {regin} from '../firebaseConfig'
-import { checkmarkCircle, push } from 'ionicons/icons';
-import { IonReactRouter } from '@ionic/react-router';
-import { Redirect } from 'react-router';
-import Login from './Login';
-import { NavLink } from 'react-router-dom';
-import { url } from 'inspector';
+import { checkmarkCircle } from 'ionicons/icons';
 
 const Registro: React.FC = () => {
   const history = useHistory()

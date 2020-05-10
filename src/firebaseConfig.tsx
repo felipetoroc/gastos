@@ -3,6 +3,7 @@ import 'firebase/firestore'
 import 'firebase/auth'
 import {useState} from 'react'
 import { IonLabel } from '@ionic/react';
+import { resolve } from 'url';
 
 
 
@@ -30,6 +31,10 @@ export async function login(correo: string, password: string){
   }
 }
 
+export function logout(){
+    return firebase.auth().signOut()
+}
+
 export async function regin(correo: string, password: string){
   try{
     const res = await firebase.auth().createUserWithEmailAndPassword(correo,password)
@@ -40,6 +45,7 @@ export async function regin(correo: string, password: string){
   
 }
 
+export const auth = firebase.auth()
 export const db = firebase.firestore()
 
 export function eliminar(id: string ,coleccion: string) {
