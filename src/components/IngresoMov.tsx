@@ -1,27 +1,32 @@
-import {IonButtons,IonIcon,IonFab,IonFabButton,IonAlert,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect, IonText } from '@ionic/react';
-import React , {useState,useEffect} from 'react';
+import {IonPopover,IonButtons,IonIcon,IonFab,IonFabButton,IonAlert,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect, IonText } from '@ionic/react';
+import React , {useState,useEffect,useContext} from 'react';
 import './IngresoMov.css';
 import {add} from 'ionicons/icons';
 import {db,agregar} from '../firebaseConfig'
+import IngresoCategoria from './IngresoCategoria';
+import IngresoTarjeta from './IngresoTarjeta';
+import {UserContext} from '../App'
 
-export const agregarCategoria = (nombre: string) =>{
+/*export const agregarCategoria = (nombre: string) =>{
   if(nombre!==''){
     const id = agregar({nombre_categoria:nombre},"gastos_categorias");
     console.log(id)
   }
-}
+}*/
 
-export const agregarTarjeta = (nombre: string, cupo: string, dia: string) =>{
+/*export const agregarTarjeta = (nombre: string, cupo: string, dia: string) =>{
   if(nombre!==''){
     const id = agregar({tarjeta_nombre:nombre,tarjeta_cupo:cupo,tarjeta_dia_f:dia},"tarjetas");
     console.log(id)
   }
-}
+}*/
 
 const IngresoMov: React.FC = () => {
   const listaVacia = [] as any[]
   const [listaCategoria, setListaCategoria] = useState(listaVacia)
   const [listaTarjetas, setListaTarjetas] = useState(listaVacia)
+
+  const user = useContext(UserContext)
 
   const [showAlert, setShowAlert] = useState(false)
   const [showTarjetaInput, setShowTarjetaInput] = useState(false)
@@ -38,6 +43,8 @@ const IngresoMov: React.FC = () => {
   const [categoria, setCategoria] = useState('')
 
   const [showtoast,setShowtoast] = useState(false)
+  const [popoverCate, setPopoverCate] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
+  const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
   useEffect(()=>{
     if(tipoMoneda==="efectivo"){
@@ -83,7 +90,7 @@ const IngresoMov: React.FC = () => {
               mov_descripcion: descripcion,
               mov_monto: monto,
               mov_categoria: categoria
-            },"movimientos");
+            },"movimientos",user.uid);
           agregar(
             {
               mov_periodo:periodo,
@@ -95,7 +102,7 @@ const IngresoMov: React.FC = () => {
               mov_descripcion: descripcion,
               mov_monto: monto,
               mov_categoria: categoria
-            },"movimientos");
+            },"movimientos",user.uid);
             
         }else{
           const id = agregar(
@@ -109,7 +116,7 @@ const IngresoMov: React.FC = () => {
               mov_descripcion: descripcion,
               mov_monto: monto,
               mov_categoria: categoria
-            },"movimientos");
+            },"movimientos",user.uid);
           }
           
       }else{
@@ -128,7 +135,7 @@ const IngresoMov: React.FC = () => {
               mov_descripcion: descripcion,
               mov_monto: montoCuota.toString(),
               mov_categoria: categoria
-            },"movimientos");
+            },"movimientos",user.uid);
           contador++;
           console.log(i)
         }
@@ -150,7 +157,7 @@ const IngresoMov: React.FC = () => {
     }
   };
 
-  const InputCategoria = () => {
+  /*const InputCategoria = () => {
     return(
       <IonAlert
           isOpen={showAlert}
@@ -224,7 +231,8 @@ const IngresoMov: React.FC = () => {
           ]}
         />
     )
-  }
+  }*/
+
   return (
     <>
           <IonList >
@@ -250,10 +258,17 @@ const IngresoMov: React.FC = () => {
                 ))}
               </IonSelect>
               <IonButtons>
-                <IonButton onClick={() => setShowTarjetaInput(true)} color="secondary" >
+                <IonButton onClick={(e: any) => {e.persist();setPopoverCate({show:true,evento:e})}} color="secondary" >
                   <IonIcon icon={add}></IonIcon>
                 </IonButton>
               </IonButtons>
+              <IonPopover
+                isOpen={popoverTar.show}
+                event={popoverTar.evento}
+                onDidDismiss={e => setPopoverTar({show:false, evento:e})}
+                >
+                <IngresoTarjeta/>
+              </IonPopover>
             </IonItem>
             {tipoMoneda!="efectivo" && tipoMoneda != '' && tipoMovimiento != "pagotc"?
               <IonItem>
@@ -283,14 +298,20 @@ const IngresoMov: React.FC = () => {
               <IonSelect value={categoria} onIonChange={e => setCategoria(e.detail.value)} interface="popover">
               {listaCategoria.map((cate,i) => (
                 <IonSelectOption key={i} value={cate.nombre}>{cate.nombre}</IonSelectOption>
-                
               ))}
               </IonSelect>
               <IonButtons>
-                <IonButton onClick={() => setShowAlert(true)} color="secondary" >
+                <IonButton onClick={(e: any) => {e.persist();setPopoverCate({show:true,evento:e})}} color="secondary" >
                   <IonIcon icon={add}></IonIcon>
                 </IonButton>
               </IonButtons>
+              <IonPopover
+                isOpen={popoverCate.show}
+                event={popoverCate.evento}
+                onDidDismiss={e => setPopoverCate({show:false, evento:e})}
+                >
+                <IngresoCategoria/>
+              </IonPopover>
             </IonItem>
             <IonItem>
               <IonInput
@@ -310,8 +331,7 @@ const IngresoMov: React.FC = () => {
               <IonButton expand="block" onClick={agregarGasto}>Guardar</IonButton>
             </section>
           </IonList>
-          <InputCategoria/>
-          <InputTarjeta/>
+          
           <IonToast
             isOpen={showtoast}
             onDidDismiss={() => setShowtoast(false)}

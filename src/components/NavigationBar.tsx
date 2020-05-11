@@ -11,15 +11,14 @@ const NavigationBar: React.FC = () => {
 
     async function logoutUser(){
         var res = await logout();
-        console.log(res)
-        history.replace('/')
+        history.replace('/Login')
     }
     return(
       <IonToolbar>
         <IonButtons slot="start">
           <IonMenuButton color="primary"/>
         </IonButtons>
-        <IonTitle>{user.email}</IonTitle>
+        <IonTitle>{user.email+user.uid}</IonTitle>
         <IonButtons slot="end">
           <IonButton slot="end" onClick={logoutUser} color="danger"><IonIcon icon={logOut}></IonIcon></IonButton>
         </IonButtons>

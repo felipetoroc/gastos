@@ -2,22 +2,22 @@ import {IonPage,IonToolbar,IonTitle,IonHeader,IonContent,IonToast,IonItemDivider
 import React , {useState} from 'react';
 import './Login.css';
 import {login} from '../firebaseConfig'
+import {useHistory} from 'react-router-dom'
 
 const Login: React.FC = () => {
   const [correo,setCorreo] = useState('');
   const [password,setPassword] = useState('');
   const [error,setError] = useState('')
+  const history = useHistory()
 
   async function loginUser(){
     const res = await login(correo,password);
-    if(res===true){
-      console.log("correcto")
-      setCorreo('')
-      setPassword('')
-    }else{
+    if(res===false){
       setError("Contraseña incorrecta o usuario no existe")
       setCorreo('')
       setPassword('')
+    }else{
+      history.replace('/Resumen')
     }
     
   };

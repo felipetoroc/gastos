@@ -1,14 +1,16 @@
 import {IonText,IonPopover,IonButton,IonLabel,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonSelect, IonSelectOption, IonButtons, IonIcon } from '@ionic/react';
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect, useContext} from 'react';
 import './Home.css';
-import {db} from '../firebaseConfig'
+import {db,eliminar} from '../firebaseConfig'
 import { add,trash } from 'ionicons/icons';
+import {UserContext} from '../App'
 
 const Home: React.FC = () => {
   const listaVacia = [] as any[]
   const [listaMov, setlistaMov] = useState(listaVacia);
   const [listaPeriodo, setListaPeriodo] = useState(listaVacia);
   const [selectedPeriodo, setSelectedPeriodo] = useState('')
+  const user = useContext(UserContext)
 
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
@@ -55,7 +57,7 @@ const Home: React.FC = () => {
 
   function eliminarMov(id: string){
     setlistaMov(listaVacia)
-    db.collection("movimientos").doc(id).delete();
+    eliminar(id,"movimientos",user.uid)
   }
 
   return (

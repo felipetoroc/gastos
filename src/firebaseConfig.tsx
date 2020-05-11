@@ -48,13 +48,13 @@ export async function regin(correo: string, password: string){
 export const auth = firebase.auth()
 export const db = firebase.firestore()
 
-export function eliminar(id: string ,coleccion: string) {
-  db.collection(coleccion).doc(id).delete();
+export function eliminar(id: string ,coleccion: string,uid:string) {
+  db.collection("usersData").doc(uid).collection(coleccion).doc(id).delete();
 }
 
-export function agregar(data: any,coleccion: string){
+export function agregar(data: any,coleccion: string,uid: string){
   try{
-      var docid = db.collection(coleccion).doc();
+      var docid = db.collection("usersData").doc(uid).collection(coleccion).doc();
       docid.set(data)
       return docid.id;
   }catch(error){
@@ -62,9 +62,9 @@ export function agregar(data: any,coleccion: string){
   }
 }
 
-export function actualizar(data: any,coleccion: string, id: string){
+export function actualizar(data: any,coleccion: string, id: string,uid:string){
   try{
-    db.collection(coleccion).doc(id).set(data);
+    db.collection("usersData").doc(uid).collection(coleccion).doc(id).set(data);
   }catch(error){
     console.log(error)
   }
@@ -72,17 +72,17 @@ export function actualizar(data: any,coleccion: string, id: string){
 
 
 //aun no funciona del todo
-export function mostrar(coleccion: string){
-  db.collection(coleccion).get().then(function(querySnapshot) {
-    querySnapshot.forEach(function(doc) {
-        if(doc.exists){
-          console.log(doc.id, " => ", doc.data());
-        }else{
-          console.log("no hay info seteada")
-        }
-        
+export async function mostrar(coleccion: string,uid:string){
+  return new Promise((resolve,reject)=>{
+    const data = db.collection("usersData").doc(uid).collection(coleccion).onSnapshot(function(querySnapshot) {
+          if(querySnapshot){
+            resolve(querySnapshot)
+          }else{
+            resolve(null)
+          }
+          data()
     });
-  });
+  })
 }
 
 

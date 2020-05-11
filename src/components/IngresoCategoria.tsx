@@ -1,44 +1,44 @@
 import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
-import React , {useState,useContext} from 'react';
-import './IngresoGastoFijo.css';
+import React , {useState,useContext, useEffect} from 'react';
+import './IngresoCategoria.css';
 import {agregar} from '../firebaseConfig'
 import {UserContext} from '../App'
 
-const IngresoGastoFijo: React.FC = () => {
+export const agregarCategoria = (nombre: string,uid:string) =>{
+    if(nombre!==''){
+
+      const id = agregar({nombre_categoria:nombre},"categorias",uid);
+      console.log(id)
+    }
+}
+
+const IngresoCategoria: React.FC = () => {
   const [mensaje,setMensaje] = useState('');
   const [texto,setTexto] = useState('');
-  const [monto,setMonto] = useState('');
   const [showtoast,setShowtoast] = useState(false)
   const user = useContext(UserContext)
 
-  const agregarGasto = () => {
-    const docid = agregar({descripcion:texto,monto:monto},"gastos_fijos",user.uid);
+  useEffect(()=>{
+    console.log(user.uid)
+  })
+  const agregar = () => {
+    const docid = agregarCategoria(texto,user.uid);
     setShowtoast(true)
-    setMensaje("Gasto fijo ingresado correctamente");
-    setMonto('')
-    setTexto('')
-
+    setMensaje("Categoría guardada");
   };
 
   return (
     <>
           <IonList>
-            <IonItemDivider>Descripción gasto</IonItemDivider>
+            <IonItemDivider>Nombre categoría</IonItemDivider>
             <IonItem>
               <IonInput
                 value={texto} 
                 onIonChange={(e: any) => setTexto(e.target.value)}>
               </IonInput>
             </IonItem>
-            <IonItemDivider>Monto</IonItemDivider>
-            <IonItem>
-              <IonInput
-                value={monto} 
-                onIonChange={(e: any) => setMonto(e.target.value)}>
-              </IonInput>
-            </IonItem>
             <section>
-              <IonButton expand="block" onClick={agregarGasto}>Guardar</IonButton>
+              <IonButton expand="block" onClick={agregar}>Guardar</IonButton>
             </section>
           </IonList>
           <IonToast
@@ -51,4 +51,4 @@ const IngresoGastoFijo: React.FC = () => {
   );
 };
 
-export default IngresoGastoFijo;
+export default IngresoCategoria;

@@ -1,16 +1,18 @@
 import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonLabel } from '@ionic/react';
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useContext} from 'react';
 import './Fijos.css';
 import {db,eliminar} from '../firebaseConfig'
 import { add } from 'ionicons/icons';
 import IngresoGastoFijo from '../components/IngresoGastoFijo'
+import {UserContext} from '../App'
 
 const Fijos: React.FC = () => {
   const listaVacia = [] as any[]
   const [total, setTotal] = useState(0)
   const [listaGastoFijo,setListaGastoFijo] = useState(listaVacia);
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
-  
+  const user = useContext(UserContext)
+
   useEffect(() => {
     db.collection("gastos_fijos").onSnapshot((querySnapshot) => {
         var sumaTotal = 0
@@ -33,8 +35,8 @@ const Fijos: React.FC = () => {
     })
   },[])
 
-  function eliminarGasto(id: string){
-    eliminar(id,"gastos_fijos")
+  function eliminarGastoFijo(id: string){
+    eliminar(id,"gastos_fijos",user.uid)
   }
 
   return (
@@ -62,7 +64,7 @@ const Fijos: React.FC = () => {
                         <IonCol>{gasto.descripcion}</IonCol>
                         <IonCol>{gasto.monto}</IonCol>
                     </IonItem>
-                    <IonItemOptions side="end" onClick={() => {eliminarGasto(gasto.id)}}>
+                    <IonItemOptions side="end" onClick={() => {eliminarGastoFijo(gasto.id)}}>
                         <IonItemOption color="danger" expandable>
                             Eliminar
                         </IonItemOption>

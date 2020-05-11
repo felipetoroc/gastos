@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect,useContext} from 'react';
 import { Redirect, Route} from 'react-router-dom';
 import {IonProgressBar,IonButton, IonApp, IonRouterOutlet, IonButtons, IonMenuButton, IonIcon, IonToolbar } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -41,10 +41,12 @@ import './theme/variables.css';*/
 
 
 const RoutingSystem: React.FC = () => {
+  const user = useContext(UserContext);
+
   return(
     <IonReactRouter>
-      <Menu></Menu>
-      <NavigationBar/>
+      {user.email?<Menu></Menu>:<></>}
+      {user.email?<NavigationBar/>:<></>}
       <IonRouterOutlet id="main">
         <Route path="/Login" component={Login} exact />
         <Route path="/Registro" component={Registro} exact />
@@ -60,37 +62,38 @@ const RoutingSystem: React.FC = () => {
 }
 
 const interfaceUser = {
-  email: ''
+  email: '',
+  uid: '',
 }
 
 export const UserContext = React.createContext(interfaceUser)
 
 const App: React.FC = () => {
-  const [loggedin, setLoggedin] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  const [userEmail, setUserEmail] = useState(interfaceUser)
+  
+  const [userData, setUserData] = useState(interfaceUser)
   
   useEffect(()=>{
+    
     auth.onAuthStateChanged(function(user) {
+      
       var correoUsuario = '';
+      var idusuario = '';
+      var nombreUsuario = '';
       if(user){
-        setLoggedin(true)
         if(user.email!=null){
           correoUsuario = user.email
+          idusuario = user.uid
         }
-        window.history.replaceState({},'', '/Resumen')
       }else{
-        setLoggedin(false)
-        setUserEmail({email: ''})
-        window.history.replaceState({},'', '/Login')
+        setUserData({email: '',uid: ''})
       }
-      setUserEmail({email:correoUsuario})
+      setUserData({email:correoUsuario,uid:idusuario})
+      
     });
   },[])
 
     return (
-      <UserContext.Provider value={userEmail}>
+      <UserContext.Provider value={userData}>
         <IonApp>
           <RoutingSystem />
         </IonApp>
