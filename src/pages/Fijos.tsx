@@ -14,7 +14,7 @@ const Fijos: React.FC = () => {
   const user = useContext(UserContext)
 
   useEffect(() => {
-    db.collection("gastos_fijos").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("gastos_fijos").onSnapshot((querySnapshot) => {
         var sumaTotal = 0
         querySnapshot.forEach(doc => {
           sumaTotal += parseFloat(doc.data().monto)
@@ -24,7 +24,7 @@ const Fijos: React.FC = () => {
   },[])
 
   useEffect(() => {
-    db.collection("gastos_fijos").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("gastos_fijos").onSnapshot((querySnapshot) => {
         console.log("vacia arreglo")
         setListaGastoFijo(listaVacia)
         querySnapshot.forEach(doc => {

@@ -1,12 +1,14 @@
 import {IonItem,IonList,IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonToolbar,IonTitle,IonContent, IonLabel, IonRow, IonCol} from '@ionic/react';
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useContext} from 'react';
 import './Resumen.css';
 import { add } from 'ionicons/icons';
 import IngresoMov from '../components/IngresoMov'
 import {db} from '../firebaseConfig'
+import {UserContext} from '../App'
 
 const Resumen: React.FC = () => {
-    
+    const user = useContext(UserContext)
+
     const [vCredito, setVCredito] = useState(0)
     const [vEfectivo, setVEfectivo] = useState(0)
     const [fCredito, setFCredito] = useState(0)
@@ -20,7 +22,7 @@ const Resumen: React.FC = () => {
     const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
     
     useEffect(() => {
-        db.collection("movimientos").onSnapshot((querySnapshot) => {
+        db.collection("usersData").doc(user.uid).collection("movimientos").onSnapshot((querySnapshot) => {
             var sumaVCredito = 0
             var sumaVEfectivo = 0
             var sumaFCredito = 0

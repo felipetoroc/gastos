@@ -88,6 +88,11 @@ const Registro: React.FC = () => {
             <IonList>
                 <IonButton expand="block" onClick={regUser}>Registrarse</IonButton>
             </IonList>
+            <IonList>
+                <IonItem routerLink="/Login" routerDirection="none" lines="none">
+                    <IonLabel color="primary">Ya tienes una cuenta? inicia sesión aquí</IonLabel>
+                </IonItem>
+            </IonList>
           </IonCard>
         </IonContent>
         <IonAlert

@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
   useEffect(() => {
-    db.collection("movimientos").orderBy("mov_periodo","asc").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("movimientos").orderBy("mov_periodo","asc").onSnapshot((querySnapshot) => {
         setListaPeriodo(listaVacia)
         var prevPeriodo = '';
         querySnapshot.forEach(doc => {
@@ -32,7 +32,7 @@ const Home: React.FC = () => {
   },[])
 
   useEffect(() => {
-    db.collection("movimientos").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("movimientos").onSnapshot((querySnapshot) => {
         setlistaMov(listaVacia)
         querySnapshot.forEach(doc => {
             var splitFecha = doc.data().mov_fecha.split("T");

@@ -1,13 +1,15 @@
 import {IonPage,IonToolbar,IonTitle,IonHeader,IonContent,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonCard, IonLabel } from '@ionic/react';
-import React , {useState} from 'react';
+import React , {useState,useContext} from 'react';
 import './Login.css';
 import {login} from '../firebaseConfig'
 import {useHistory} from 'react-router-dom'
+import {UserContext} from '../App'
 
 const Login: React.FC = () => {
   const [correo,setCorreo] = useState('');
   const [password,setPassword] = useState('');
   const [error,setError] = useState('')
+  const user = useContext(UserContext)
   const history = useHistory()
 
   async function loginUser(){
@@ -54,9 +56,11 @@ const Login: React.FC = () => {
           <IonList>
               <IonButton expand="block" onClick={loginUser}>Iniciar sesión</IonButton>
           </IonList>
-          <IonItem routerLink="/Registro" routerDirection="none" lines="none" >
-                    <IonLabel color="primary">Usuario nuevo</IonLabel>
-                </IonItem>
+          <IonList>
+            <IonItem routerLink="/Registro" routerDirection="none" lines="none" >
+              <IonLabel color="primary">No tienes cuenta? crea una aquí</IonLabel>
+            </IonItem>
+          </IonList>  
           </IonCard>
         </IonContent>
     </IonPage>

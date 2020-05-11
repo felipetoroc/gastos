@@ -1,7 +1,7 @@
 import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonInput, IonLabel, IonButtons, IonButton } from '@ionic/react';
 import React, {useState,useEffect,useContext} from 'react';
 import './Categorias.css';
-import {db,eliminar,agregar,mostrar} from '../firebaseConfig'
+import {db,eliminar} from '../firebaseConfig'
 import { add,play,caretBack } from 'ionicons/icons';
 import {agregarCategoria} from '../components/IngresoCategoria'
 import {UserContext} from '../App'
@@ -14,33 +14,26 @@ const Categorias: React.FC = () => {
   const user = useContext(UserContext)
   const [userID, setUserID] = useState('')
 
-  function cargarLista(){
-    mostrar("categorias",user.uid).then((query:any) => {
-        query.forEach((doc:any) => {
-            var objeto = {id:doc.id,nombre:doc.data().nombre_categoria}
-            setLista(prevLista => [...prevLista, objeto]);
-            console.log(objeto)
-        });
-    })
-  }
 
   useEffect(() => {
-    if(user.uid!=""){
-        cargarLista()
-    }
-  },[user.uid])
+    db.collection("usersData").doc(user.uid).collection("categorias").onSnapshot((querySnapshot) => {
+        setLista(listaVacia)
+        querySnapshot.forEach(doc => {
+            var objeto = {id:doc.id,nombre:doc.data().nombre_categoria}
+            setLista(prevLista => [...prevLista, objeto]);
+        })
+    });
+  },[])
 
   function eliminarCate(id: string){
     setLista(listaVacia)
     eliminar(id,"categorias",user.uid)
-    cargarLista()
   }
 
   return (
     <IonPage>
         <IonHeader>
             <IonToolbar>
-                <IonLabel>{user.uid}</IonLabel>
                 <IonTitle>Configuración</IonTitle>
             </IonToolbar>
         </IonHeader>
@@ -58,7 +51,7 @@ const Categorias: React.FC = () => {
                 <IonInput placeholder="Ingrese nombre" value={nombre} onIonChange={(e:any) => {setNombre(e.target.value)}}>
                 </IonInput>
                 <IonButtons>
-                    <IonButton color="success" onClick={() => {agregarCategoria(nombre,user.uid);setNombre('');cargarLista()}}><IonIcon icon={add}></IonIcon>
+                    <IonButton color="success" onClick={() => {agregarCategoria(nombre,user.uid);setNombre('')}}><IonIcon icon={add}></IonIcon>
                     </IonButton>
                 </IonButtons>
             </IonItem>

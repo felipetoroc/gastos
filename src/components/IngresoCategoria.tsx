@@ -18,9 +18,6 @@ const IngresoCategoria: React.FC = () => {
   const [showtoast,setShowtoast] = useState(false)
   const user = useContext(UserContext)
 
-  useEffect(()=>{
-    console.log(user.uid)
-  })
   const agregar = () => {
     const docid = agregarCategoria(texto,user.uid);
     setShowtoast(true)

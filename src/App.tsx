@@ -39,66 +39,66 @@ import NavigationBar from './components/NavigationBar'
 /* Theme variables 
 import './theme/variables.css';*/
 
-
-const RoutingSystem: React.FC = () => {
+const RoutingSystemLogout: React.FC = () => {
   const user = useContext(UserContext);
 
   return(
     <IonReactRouter>
-      {user.email?<Menu></Menu>:<></>}
-      {user.email?<NavigationBar/>:<></>}
       <IonRouterOutlet id="main">
         <Route path="/Login" component={Login} exact />
         <Route path="/Registro" component={Registro} exact />
-        <Route path="/Home" component={Home} exact />
-        <Route path="/Resumen" component={Resumen} exact />
-        <Route path="/Mantenedor" component={Mantenedor} exact />
-        <Route path="/Fijos" component={Fijos} exact />
-        <Route path="/Categorias" component={Categorias} exact />
         <Route path="/" component={Login}></Route>
       </IonRouterOutlet>
     </IonReactRouter>
   )
 }
 
-const interfaceUser = {
-  email: '',
-  uid: '',
+const RoutingSystemLogin: React.FC = () => {
+  const user = useContext(UserContext);
+
+  return(
+    <IonReactRouter>
+      <Menu></Menu>
+      <NavigationBar/>
+      <IonRouterOutlet id="main">
+        <Route path="/Home" component={Home} exact />
+        <Route path="/Resumen" component={Resumen} exact />
+        <Route path="/Mantenedor" component={Mantenedor} exact />
+        <Route path="/Fijos" component={Fijos} exact />
+        <Route path="/Categorias" component={Categorias} exact />
+        <Route path="/" component={Resumen}></Route>
+      </IonRouterOutlet>
+    </IonReactRouter>
+  )
 }
 
-export const UserContext = React.createContext(interfaceUser)
+
+export const UserContext = React.createContext<any>({})
 
 const App: React.FC = () => {
-  
-  const [userData, setUserData] = useState(interfaceUser)
+  const [busy, setBusy] = useState(true)
+  const [logedIn, setLogedIn] = useState(false)
+  const [userData, setUserData] = useState<any>({})
   
   useEffect(()=>{
-    
-    auth.onAuthStateChanged(function(user) {
-      
-      var correoUsuario = '';
-      var idusuario = '';
-      var nombreUsuario = '';
+    auth.onAuthStateChanged((user) => {
       if(user){
-        if(user.email!=null){
-          correoUsuario = user.email
-          idusuario = user.uid
-        }
+        setUserData({email:user.email,uid:user.uid})
+        setLogedIn(true)
       }else{
-        setUserData({email: '',uid: ''})
+        setLogedIn(false)
       }
-      setUserData({email:correoUsuario,uid:idusuario})
-      
+      setBusy(false)
     });
   },[])
 
     return (
       <UserContext.Provider value={userData}>
         <IonApp>
-          <RoutingSystem />
+          {busy ? <IonProgressBar type="indeterminate"></IonProgressBar>: logedIn?<RoutingSystemLogin/>:<RoutingSystemLogout/>}
         </IonApp>
       </UserContext.Provider>
-    );
+      )
 };
 
 export default App;

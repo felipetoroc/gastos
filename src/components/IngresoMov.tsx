@@ -1,4 +1,4 @@
-import {IonPopover,IonButtons,IonIcon,IonFab,IonFabButton,IonAlert,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect, IonText } from '@ionic/react';
+import {IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect } from '@ionic/react';
 import React , {useState,useEffect,useContext} from 'react';
 import './IngresoMov.css';
 import {add} from 'ionicons/icons';
@@ -7,29 +7,12 @@ import IngresoCategoria from './IngresoCategoria';
 import IngresoTarjeta from './IngresoTarjeta';
 import {UserContext} from '../App'
 
-/*export const agregarCategoria = (nombre: string) =>{
-  if(nombre!==''){
-    const id = agregar({nombre_categoria:nombre},"gastos_categorias");
-    console.log(id)
-  }
-}*/
-
-/*export const agregarTarjeta = (nombre: string, cupo: string, dia: string) =>{
-  if(nombre!==''){
-    const id = agregar({tarjeta_nombre:nombre,tarjeta_cupo:cupo,tarjeta_dia_f:dia},"tarjetas");
-    console.log(id)
-  }
-}*/
-
 const IngresoMov: React.FC = () => {
   const listaVacia = [] as any[]
   const [listaCategoria, setListaCategoria] = useState(listaVacia)
   const [listaTarjetas, setListaTarjetas] = useState(listaVacia)
 
   const user = useContext(UserContext)
-
-  const [showAlert, setShowAlert] = useState(false)
-  const [showTarjetaInput, setShowTarjetaInput] = useState(false)
 
   const [mensaje,setMensaje] = useState('');
   const [periodo, setPeriodo] = useState('')
@@ -56,7 +39,7 @@ const IngresoMov: React.FC = () => {
   },[tipoMoneda,tipoMovimiento])
 
   useEffect(()=>{
-    db.collection("gastos_categorias").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("categorias").onSnapshot((querySnapshot) => {
         setListaCategoria(listaVacia)
         querySnapshot.forEach(doc => {
             var objeto = {nombre:doc.data().nombre_categoria}
@@ -66,7 +49,7 @@ const IngresoMov: React.FC = () => {
   },[])
 
   useEffect(()=>{
-    db.collection("tarjetas").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("tarjetas").onSnapshot((querySnapshot) => {
         setListaTarjetas(listaVacia)
         querySnapshot.forEach(doc => {
             var objeto = {nombre:doc.data().tarjeta_nombre,cupo:doc.data().tarjeta_cupo,dia:doc.data().tarjeta_dia_f}
@@ -157,85 +140,9 @@ const IngresoMov: React.FC = () => {
     }
   };
 
-  /*const InputCategoria = () => {
-    return(
-      <IonAlert
-          isOpen={showAlert}
-          onDidDismiss={() => setShowAlert(false)}
-          header={'Nueva categoria'}
-          inputs={[
-            {
-              name: 'nombreCategoria',
-              type: 'text',
-              placeholder: 'Placeholder 1'
-            },
-          ]}
-          buttons={[
-            {
-              text: 'Cancel',
-              role: 'cancel',
-              cssClass: 'secondary',
-              handler: () => {
-                console.log('Confirm Cancel');
-              }
-            },
-            {
-              text: 'Guardar',
-              handler: data => {
-                agregarCategoria(data.nombreCategoria);
-              }
-            }
-          ]}
-        />
-    )
-  }
-
-  const InputTarjeta = () => {
-    return(
-      <IonAlert
-          isOpen={showTarjetaInput}
-          onDidDismiss={() => setShowTarjetaInput(false)}
-          header={'Nueva tarjeta'}
-          inputs={[
-            {
-              name: 'nombreTarjeta',
-              type: 'text',
-              placeholder: 'Nombre descriptivo'
-            },
-            {
-              name: 'cupoTarjeta',
-              type: 'text',
-              placeholder: 'Cupo'
-            },
-            {
-              name: 'diaTarjeta',
-              type: 'text',
-              placeholder: 'Dia de facturación'
-            },
-          ]}
-          buttons={[
-            {
-              text: 'Cancel',
-              role: 'cancel',
-              cssClass: 'secondary',
-              handler: () => {
-                console.log('Confirm Cancel');
-              }
-            },
-            {
-              text: 'Guardar',
-              handler: data => {
-                agregarTarjeta(data.nombreTarjeta,data.cupoTarjeta,data.diaTarjeta);
-              }
-            }
-          ]}
-        />
-    )
-  }*/
-
   return (
     <>
-          <IonList >
+          <IonList className="ingresoMov" >
             <IonTitle className="ion-padding">Movimiento nuevo</IonTitle>
             <IonItem>
               <IonLabel>Tipo de movimiento</IonLabel>
@@ -258,7 +165,7 @@ const IngresoMov: React.FC = () => {
                 ))}
               </IonSelect>
               <IonButtons>
-                <IonButton onClick={(e: any) => {e.persist();setPopoverCate({show:true,evento:e})}} color="secondary" >
+                <IonButton onClick={(e: any) => {e.persist();setPopoverTar({show:true,evento:e})}} color="secondary" >
                   <IonIcon icon={add}></IonIcon>
                 </IonButton>
               </IonButtons>

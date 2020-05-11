@@ -71,21 +71,6 @@ export function actualizar(data: any,coleccion: string, id: string,uid:string){
 }
 
 
-//aun no funciona del todo
-export async function mostrar(coleccion: string,uid:string){
-  return new Promise((resolve,reject)=>{
-    const data = db.collection("usersData").doc(uid).collection(coleccion).onSnapshot(function(querySnapshot) {
-          if(querySnapshot){
-            resolve(querySnapshot)
-          }else{
-            resolve(null)
-          }
-          data()
-    });
-  })
-}
-
-
 export function totalGastos(coleccion: string):any {
    db.collection(coleccion).get().then(function(querySnapshot){
     var suma = 0;

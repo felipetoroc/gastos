@@ -1,3 +1,7 @@
 ion-list ion-title{
     text-align: center;
 }
+
+.ingresoMov ion-input{
+    text-align: right;
+}
