@@ -24,10 +24,49 @@ const IngresoMov: React.FC = () => {
   const [descripcion,setDescripcion] = useState('');
   const [monto,setMonto] = useState('');
   const [categoria, setCategoria] = useState('')
+  const [diaTope, setDiaTope] = useState('')
 
   const [showtoast,setShowtoast] = useState(false)
   const [popoverCate, setPopoverCate] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
+
+ function getDiaTope(tipo: string){
+    
+ }
+
+ function setearPeriodo(){
+  var splitFechaInput = fecha.split("T");
+  var split2FechaInput = splitFechaInput[0].split("-")
+  var periodoFechaInput = split2FechaInput[0]+split2FechaInput[1]+split2FechaInput[2]
+  var periodoDiaPago = split2FechaInput[0]+split2FechaInput[1]+diaTope
+  
+  if(parseInt(periodoFechaInput)<=parseInt(periodoDiaPago)){
+    return split2FechaInput[0]+split2FechaInput[1]
+  }else{
+    var nextPeriodo = parseInt(split2FechaInput[1])+1
+    var nextPeriodoTexto = nextPeriodo<=9?"0"+nextPeriodo.toString():nextPeriodo.toString()
+    return split2FechaInput[0]+nextPeriodoTexto
+  }
+ }
+  useEffect(()=>{
+    if(tipoMoneda==="efectivo"){
+      db.collection("usersData").doc(user.uid).collection("info_importante").onSnapshot((querySnapshot) => {
+          querySnapshot.forEach(doc => {
+            setDiaTope(doc.data().dia_pago)
+            console.log(setearPeriodo())
+          });
+      })
+    }else{
+      db.collection("usersData").doc(user.uid).collection("tarjetas").onSnapshot((querySnapshot) => {
+          querySnapshot.forEach(doc => {
+            if(doc.data().tarjeta_nombre===tipoMoneda){
+              setDiaTope(doc.data().tarjeta_dia_f)
+              console.log(setearPeriodo())
+            }
+          });
+      })
+    }
+  },[tipoMoneda,fecha])
 
   useEffect(()=>{
     if(tipoMoneda==="efectivo"){
