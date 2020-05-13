@@ -2,7 +2,7 @@ import React,{useState, useEffect,useContext} from 'react';
 import { Redirect, Route} from 'react-router-dom';
 import {IonProgressBar,IonButton, IonApp, IonRouterOutlet, IonButtons, IonMenuButton, IonIcon, IonToolbar } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import {auth,logout} from './firebaseConfig';
+import {auth,logout,db} from './firebaseConfig';
 import {useHistory} from 'react-router-dom'
 
 
@@ -54,7 +54,6 @@ const RoutingSystemLogout: React.FC = () => {
 }
 
 const RoutingSystemLogin: React.FC = () => {
-  const user = useContext(UserContext);
 
   return(
     <IonReactRouter>

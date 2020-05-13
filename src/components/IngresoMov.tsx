@@ -1,5 +1,5 @@
 import {IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect } from '@ionic/react';
-import React , {useState,useEffect,useContext} from 'react';
+import React , {useState,useEffect,useContext,useReducer} from 'react';
 import './IngresoMov.css';
 import {add} from 'ionicons/icons';
 import {db,agregar} from '../firebaseConfig'
@@ -7,66 +7,64 @@ import IngresoCategoria from './IngresoCategoria';
 import IngresoTarjeta from './IngresoTarjeta';
 import {UserContext} from '../App'
 
-const IngresoMov: React.FC = () => {
+const establecerPeriodo = (fechaMovimiento:string,moneda:string,dia:string,tarjetas:any[]) =>{
+    var diaTope = '';
+    if(moneda=="" || moneda=="efectivo"){
+      diaTope = dia
+    }else{
+      tarjetas.map((tarjeta,i)=>{
+        if(moneda==tarjeta.nombre){
+          diaTope = tarjeta.dia
+        }
+      })
+    }
+    var splitFechaInput = fechaMovimiento.split("T");
+    var split2FechaInput = splitFechaInput[0].split("-")
+    var periodoFechaInput = split2FechaInput[0]+split2FechaInput[1]+split2FechaInput[2]
+    var periodoDiaPago = split2FechaInput[0]+split2FechaInput[1]+diaTope
+
+    console.log(periodoDiaPago)
+    console.log(periodoFechaInput)
+    if(parseInt(periodoFechaInput)<=parseInt(periodoDiaPago)){
+      return split2FechaInput[0]+split2FechaInput[1]
+    }else{
+      var nextPeriodo = parseInt(split2FechaInput[1])+1
+      var nextPeriodoTexto = nextPeriodo<=9?"0"+nextPeriodo.toString():nextPeriodo.toString()
+      return split2FechaInput[0]+nextPeriodoTexto
+    }
+}
+
+
+const IngresoMov: React.FC<any> = ({props}) => {
+
   const listaVacia = [] as any[]
   const [listaCategoria, setListaCategoria] = useState(listaVacia)
   const [listaTarjetas, setListaTarjetas] = useState(listaVacia)
+  const [infoImportante, setInfoImportante] = useState({dia:''})
 
   const user = useContext(UserContext)
-
+  
   const [mensaje,setMensaje] = useState('');
   const [periodo, setPeriodo] = useState('')
   const [fecha, setFecha] = useState(new Date().toISOString())
   const [cuotas, setCuotas] = useState(1)
-  const [tipoMoneda, setTipoMoneda] = useState('')
+  const [tipoMoneda, setTipoMoneda] = useState('efectivo')
   const [frecMov, setFrecMov] = useState('')
   const [tipoMovimiento, setTipoMovimiento] = useState('')
   const [descripcion,setDescripcion] = useState('');
   const [monto,setMonto] = useState('');
   const [categoria, setCategoria] = useState('')
-  const [diaTope, setDiaTope] = useState('')
 
   const [showtoast,setShowtoast] = useState(false)
   const [popoverCate, setPopoverCate] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
- function getDiaTope(tipo: string){
+  useEffect(() => {
+   
+      setPeriodo(establecerPeriodo(fecha,tipoMoneda,props.dia,listaTarjetas))
+      console.log(periodo)
     
- }
-
- function setearPeriodo(){
-  var splitFechaInput = fecha.split("T");
-  var split2FechaInput = splitFechaInput[0].split("-")
-  var periodoFechaInput = split2FechaInput[0]+split2FechaInput[1]+split2FechaInput[2]
-  var periodoDiaPago = split2FechaInput[0]+split2FechaInput[1]+diaTope
-  
-  if(parseInt(periodoFechaInput)<=parseInt(periodoDiaPago)){
-    return split2FechaInput[0]+split2FechaInput[1]
-  }else{
-    var nextPeriodo = parseInt(split2FechaInput[1])+1
-    var nextPeriodoTexto = nextPeriodo<=9?"0"+nextPeriodo.toString():nextPeriodo.toString()
-    return split2FechaInput[0]+nextPeriodoTexto
-  }
- }
-  useEffect(()=>{
-    if(tipoMoneda==="efectivo"){
-      db.collection("usersData").doc(user.uid).collection("info_importante").onSnapshot((querySnapshot) => {
-          querySnapshot.forEach(doc => {
-            setDiaTope(doc.data().dia_pago)
-            console.log(setearPeriodo())
-          });
-      })
-    }else{
-      db.collection("usersData").doc(user.uid).collection("tarjetas").onSnapshot((querySnapshot) => {
-          querySnapshot.forEach(doc => {
-            if(doc.data().tarjeta_nombre===tipoMoneda){
-              setDiaTope(doc.data().tarjeta_dia_f)
-              console.log(setearPeriodo())
-            }
-          });
-      })
-    }
-  },[tipoMoneda,fecha])
+    },[fecha,tipoMoneda])
 
   useEffect(()=>{
     if(tipoMoneda==="efectivo"){
@@ -97,83 +95,85 @@ const IngresoMov: React.FC = () => {
     })
   },[])
 
+  
   const agregarGasto = () => {
-    try{
-      if(cuotas<=1){
-        if(tipoMovimiento=="pagotc"){
-          agregar(
-            {
-              mov_periodo:periodo,
-              mov_fecha: fecha,
-              mov_cuotas: "1",
-              mov_tipo_moneda: tipoMoneda,
-              mov_frec_mov: frecMov,
-              mov_tipo_mov: "ingreso",
-              mov_descripcion: descripcion,
-              mov_monto: monto,
-              mov_categoria: categoria
-            },"movimientos",user.uid);
-          agregar(
-            {
-              mov_periodo:periodo,
-              mov_fecha: fecha,
-              mov_cuotas: "1",
-              mov_tipo_moneda: "efectivo",
-              mov_frec_mov: frecMov,
-              mov_tipo_mov: "gasto",
-              mov_descripcion: descripcion,
-              mov_monto: monto,
-              mov_categoria: categoria
-            },"movimientos",user.uid);
+     try{
+        if(cuotas<=1){
+          if(tipoMovimiento=="pagotc"){
+            agregar(
+              {
+                mov_periodo:periodo,
+                mov_fecha: fecha,
+                mov_cuotas: "1",
+                mov_tipo_moneda: tipoMoneda,
+                mov_frec_mov: frecMov,
+                mov_tipo_mov: "ingreso",
+                mov_descripcion: descripcion,
+                mov_monto: monto,
+                mov_categoria: categoria
+              },"movimientos",user.uid);
+            agregar(
+              {
+                mov_periodo:periodo,
+                mov_fecha: fecha,
+                mov_cuotas: "1",
+                mov_tipo_moneda: "efectivo",
+                mov_frec_mov: frecMov,
+                mov_tipo_mov: "gasto",
+                mov_descripcion: descripcion,
+                mov_monto: monto,
+                mov_categoria: categoria
+              },"movimientos",user.uid);
+              
+          }else{
+            const id = agregar(
+              {
+                mov_periodo:periodo,
+                mov_fecha: fecha,
+                mov_cuotas: "1",
+                mov_tipo_moneda: tipoMoneda,
+                mov_frec_mov: frecMov,
+                mov_tipo_mov: tipoMovimiento,
+                mov_descripcion: descripcion,
+                mov_monto: monto,
+                mov_categoria: categoria
+              },"movimientos",user.uid);
+            }
             
         }else{
-          const id = agregar(
-            {
-              mov_periodo:periodo,
-              mov_fecha: fecha,
-              mov_cuotas: "1",
-              mov_tipo_moneda: tipoMoneda,
-              mov_frec_mov: frecMov,
-              mov_tipo_mov: tipoMovimiento,
-              mov_descripcion: descripcion,
-              mov_monto: monto,
-              mov_categoria: categoria
-            },"movimientos",user.uid);
+          var contador = 0;
+          var montoCuota = parseInt(monto)/cuotas
+          for(var i=parseInt(periodo);i<parseInt(periodo)+cuotas;i++){
+            var cuotasRestantes = cuotas-contador
+            const id = agregar(
+              {
+                mov_periodo:i.toString(),
+                mov_fecha: fecha,
+                mov_cuotas: cuotasRestantes.toString(),
+                mov_tipo_moneda: tipoMoneda,
+                mov_frec_mov: frecMov,
+                mov_tipo_mov: tipoMovimiento,
+                mov_descripcion: descripcion,
+                mov_monto: montoCuota.toString(),
+                mov_categoria: categoria
+              },"movimientos",user.uid);
+            contador++;
+            console.log(i)
           }
-          
-      }else{
-        var contador = 0;
-        var montoCuota = parseInt(monto)/cuotas
-        for(var i=parseInt(periodo);i<parseInt(periodo)+cuotas;i++){
-          var cuotasRestantes = cuotas-contador
-          const id = agregar(
-            {
-              mov_periodo:i.toString(),
-              mov_fecha: fecha,
-              mov_cuotas: cuotasRestantes.toString(),
-              mov_tipo_moneda: tipoMoneda,
-              mov_frec_mov: frecMov,
-              mov_tipo_mov: tipoMovimiento,
-              mov_descripcion: descripcion,
-              mov_monto: montoCuota.toString(),
-              mov_categoria: categoria
-            },"movimientos",user.uid);
-          contador++;
-          console.log(i)
         }
-      }
-     
-      setShowtoast(true)
-      setFecha(new Date().toISOString())
-      setPeriodo('')
-      setCuotas(1)
-      setTipoMoneda('')
-      setFrecMov('')
-      setTipoMovimiento('')
-      setCategoria('')
-      setDescripcion('')
-      setMonto('')
-      setMensaje("Movimiento ingresado correctamente");
+       
+        setShowtoast(true)
+        setFecha(new Date().toISOString())
+        setPeriodo('')
+        setCuotas(1)
+        setTipoMoneda('')
+        setFrecMov('')
+        setTipoMovimiento('')
+        setCategoria('')
+        setDescripcion('')
+        setMonto('')
+        setMensaje("Movimiento ingresado correctamente");
+        console.log(periodo)
     }catch(error){
       setMensaje(error)
     }
@@ -182,7 +182,7 @@ const IngresoMov: React.FC = () => {
   return (
     <>
           <IonList className="ingresoMov" >
-            <IonTitle className="ion-padding">Movimiento nuevo</IonTitle>
+          <IonTitle className="ion-padding">Movimiento nuevo</IonTitle>
             <IonItem>
               <IonLabel>Tipo de movimiento</IonLabel>
               <IonSelect value={tipoMovimiento} onIonChange={e => setTipoMovimiento(e.detail.value)} interface="popover">
@@ -193,11 +193,11 @@ const IngresoMov: React.FC = () => {
             </IonItem>
             <IonItem>
               <IonLabel>Fecha compra</IonLabel>
-              <IonDatetime displayFormat="YYYY-MM-DD" value={fecha} onIonChange={(e: any) => setFecha(e.detail.value!)}></IonDatetime>
+              <IonDatetime displayFormat="YYYY-MM-DD" value={fecha} onIonChange={(e: any) => {setFecha(e.detail.value!)}}></IonDatetime>
             </IonItem>
             <IonItem>
               <IonLabel>Moneda</IonLabel>
-              <IonSelect value={tipoMoneda} onIonChange={e => setTipoMoneda(e.detail.value)} interface="popover">
+              <IonSelect value={tipoMoneda} onIonChange={(e:any) => {setTipoMoneda(e.detail.value)}} interface="popover">
                 <IonSelectOption value="efectivo">Efectivo</IonSelectOption>
                 {listaTarjetas.map((tarjeta,i) => (
                   <IonSelectOption key={i} value={tarjeta.nombre}>{tarjeta.nombre}</IonSelectOption>
@@ -225,13 +225,6 @@ const IngresoMov: React.FC = () => {
                 </IonInput>
               </IonItem>:<></>
             }
-            <IonItem>
-              <IonLabel>Periodo</IonLabel>
-              <IonInput
-                value={periodo} 
-                onIonChange={(e: any) => setPeriodo(e.target.value)}>
-              </IonInput>
-            </IonItem>
             <IonItem>
               <IonLabel>Frecuencia</IonLabel>
               <IonSelect value={frecMov} onIonChange={e => setFrecMov(e.detail.value)} interface="popover">
@@ -261,6 +254,7 @@ const IngresoMov: React.FC = () => {
             </IonItem>
             <IonItem>
               <IonInput
+                className="inputTextos"
                 placeholder="Descripcion movimiento"
                 value={descripcion} 
                 onIonChange={(e: any) => setDescripcion(e.target.value)}>
@@ -268,6 +262,7 @@ const IngresoMov: React.FC = () => {
             </IonItem>
             <IonItem>
               <IonInput
+                className="inputTextos"
                 placeholder="Monto"
                 value={monto} 
                 onIonChange={(e: any) => setMonto(e.target.value)}>

@@ -1,13 +1,19 @@
-import {IonItem,IonList,IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonToolbar,IonTitle,IonContent, IonLabel, IonRow, IonCol} from '@ionic/react';
-import React, {useState,useEffect,useContext} from 'react';
+import {IonItem,IonList,IonPopover,IonFab,IonFabButton, IonIcon, IonPage,IonHeader,IonToolbar,IonTitle,IonContent, IonLabel, IonRow, IonCol,IonProgressBar} from '@ionic/react';
+import React, {useState,useEffect,useContext,useReducer} from 'react';
 import './Resumen.css';
 import { add } from 'ionicons/icons';
 import IngresoMov from '../components/IngresoMov'
 import {db} from '../firebaseConfig'
 import {UserContext} from '../App'
 
+
+
 const Resumen: React.FC = () => {
     const user = useContext(UserContext)
+    const [busy,setBusy] = useState(true)
+
+    const [infoImportante, setInfoImportante] = useState({dia:'',efectivo:'',sueldo:''})
+    const [totalFijos, setTotalFijos] = useState(0)
 
     const [vCredito, setVCredito] = useState(0)
     const [vEfectivo, setVEfectivo] = useState(0)
@@ -21,6 +27,28 @@ const Resumen: React.FC = () => {
 
     const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
     
+    
+    useEffect(()=>{
+        db.collection("usersData").doc(user.uid).collection("info_importante").onSnapshot((querySnapshot) => {
+            setInfoImportante({dia:'',efectivo:'',sueldo:''})
+            querySnapshot.forEach(doc => {
+                var objeto = {dia:doc.data().dia_pago,efectivo:doc.data().efectivo_inicial,sueldo:doc.data().monto_sueldo}
+                setInfoImportante(objeto);
+            });
+        })
+    },[])
+
+    useEffect(() => {
+        db.collection("usersData").doc(user.uid).collection("gastos_fijos").onSnapshot((querySnapshot) => {
+            var sumaTotal = 0
+            querySnapshot.forEach(doc => {
+              sumaTotal += parseFloat(doc.data().monto)
+            });
+            setTotalFijos(sumaTotal)
+        })
+      },[])
+
+
     useEffect(() => {
         db.collection("usersData").doc(user.uid).collection("movimientos").onSnapshot((querySnapshot) => {
             var sumaVCredito = 0
@@ -76,13 +104,24 @@ const Resumen: React.FC = () => {
       },[])
 
     return (
-        <IonPage>
+        <IonPage className="resumen">
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>Resumen Gastos</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
+                <IonList>
+                    <IonItem>
+                        <IonLabel>Efectivo inicial</IonLabel><IonLabel slot="end" className="datos">{infoImportante.efectivo}</IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel>Sueldo</IonLabel><IonLabel slot="end" className="datos">{infoImportante.sueldo}</IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel>Gastos fijos</IonLabel><IonLabel slot="end" className="datos">{totalFijos}</IonLabel>
+                    </IonItem>
+                </IonList>
                 <IonList>
                     <IonRow>
                         <IonCol>Movimientos variables</IonCol>
@@ -168,7 +207,7 @@ const Resumen: React.FC = () => {
                 event={popover.evento}
                 onDidDismiss={e => setPopover({show:false, evento:e})}
                 >
-                <IngresoMov/>
+                <IngresoMov props={infoImportante}/>
                 </IonPopover>
             </IonContent>
         </IonPage>

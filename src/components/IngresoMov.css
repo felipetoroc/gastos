@@ -5,3 +5,6 @@ ion-list ion-title{
 .ingresoMov ion-input{
     text-align: right;
 }
+.ingresoMov .inputTextos{
+    text-align: left;
+}
