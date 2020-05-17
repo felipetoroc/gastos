@@ -6,8 +6,6 @@ import IngresoMov from '../components/IngresoMov'
 import {db} from '../firebaseConfig'
 import {UserContext} from '../App'
 
-
-
 const Resumen: React.FC = () => {
     const user = useContext(UserContext)
     const [busy,setBusy] = useState(true)
@@ -113,9 +111,6 @@ const Resumen: React.FC = () => {
             <IonContent className="ion-padding">
                 <IonList>
                     <IonItem>
-                        <IonLabel>Efectivo inicial</IonLabel><IonLabel slot="end" className="datos">{infoImportante.efectivo}</IonLabel>
-                    </IonItem>
-                    <IonItem>
                         <IonLabel>Sueldo</IonLabel><IonLabel slot="end" className="datos">{infoImportante.sueldo}</IonLabel>
                     </IonItem>
                     <IonItem>
@@ -207,7 +202,7 @@ const Resumen: React.FC = () => {
                 event={popover.evento}
                 onDidDismiss={e => setPopover({show:false, evento:e})}
                 >
-                <IngresoMov props={infoImportante}/>
+                <IngresoMov/>
                 </IonPopover>
             </IonContent>
         </IonPage>

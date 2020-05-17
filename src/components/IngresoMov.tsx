@@ -7,48 +7,47 @@ import IngresoCategoria from './IngresoCategoria';
 import IngresoTarjeta from './IngresoTarjeta';
 import {UserContext} from '../App'
 
-const establecerPeriodo = (fechaMovimiento:string,moneda:string,dia:string,tarjetas:any[]) =>{
-    var diaTope = '';
-    if(moneda=="" || moneda=="efectivo"){
-      diaTope = dia
-    }else{
-      tarjetas.map((tarjeta,i)=>{
-        if(moneda==tarjeta.nombre){
-          diaTope = tarjeta.dia
-        }
-      })
-    }
-    var splitFechaInput = fechaMovimiento.split("T");
+const reducerPeriodo = (state:string,action:any) => {
+    
+    var diaTope = parseInt(action.moneda.dia)<=9?"0"+action.moneda.dia:action.moneda.dia
+  
+    var splitFechaInput = action.fecha.split("T");
     var split2FechaInput = splitFechaInput[0].split("-")
-    var periodoFechaInput = split2FechaInput[0]+split2FechaInput[1]+split2FechaInput[2]
-    var periodoDiaPago = split2FechaInput[0]+split2FechaInput[1]+diaTope
 
-    console.log(periodoDiaPago)
-    console.log(periodoFechaInput)
-    if(parseInt(periodoFechaInput)<=parseInt(periodoDiaPago)){
-      return split2FechaInput[0]+split2FechaInput[1]
+    var mesInt = parseInt(split2FechaInput[1])
+
+    var periodoFechaInput = split2FechaInput[0]+split2FechaInput[1]+split2FechaInput[2]
+    
+    var periodoIni = split2FechaInput[0]+split2FechaInput[1]+diaTope
+    var periodoFin = split2FechaInput[0]+split2FechaInput[1]+diaTope
+    
+    if(parseInt(periodoIni)>=parseInt(periodoFechaInput)){
+        mesInt = mesInt-1
+        var mesString = mesInt<=9?"0"+mesInt.toString():mesInt.toString()
+        periodoIni = split2FechaInput[0]+mesString+diaTope
     }else{
-      var nextPeriodo = parseInt(split2FechaInput[1])+1
-      var nextPeriodoTexto = nextPeriodo<=9?"0"+nextPeriodo.toString():nextPeriodo.toString()
-      return split2FechaInput[0]+nextPeriodoTexto
+        mesInt = mesInt+1
+        var mesString = mesInt<=9?"0"+mesInt.toString():mesInt.toString()
+        periodoFin = split2FechaInput[0]+mesString+diaTope
     }
+    return periodoIni+"-"+periodoFin;
 }
 
 
-const IngresoMov: React.FC<any> = ({props}) => {
+const IngresoMov: React.FC = () => {
 
   const listaVacia = [] as any[]
   const [listaCategoria, setListaCategoria] = useState(listaVacia)
   const [listaTarjetas, setListaTarjetas] = useState(listaVacia)
-  const [infoImportante, setInfoImportante] = useState({dia:''})
+  const [periodo, dispatchPeriodo] = useReducer(reducerPeriodo, '')
+  const [infoImportante, setInfoImportante] = useState(listaVacia)
 
   const user = useContext(UserContext)
   
   const [mensaje,setMensaje] = useState('');
-  const [periodo, setPeriodo] = useState('')
   const [fecha, setFecha] = useState(new Date().toISOString())
   const [cuotas, setCuotas] = useState(1)
-  const [tipoMoneda, setTipoMoneda] = useState('efectivo')
+  const [tipoMoneda, setTipoMoneda] = useState<any>({})
   const [frecMov, setFrecMov] = useState('')
   const [tipoMovimiento, setTipoMovimiento] = useState('')
   const [descripcion,setDescripcion] = useState('');
@@ -59,15 +58,8 @@ const IngresoMov: React.FC<any> = ({props}) => {
   const [popoverCate, setPopoverCate] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
-  useEffect(() => {
-   
-      setPeriodo(establecerPeriodo(fecha,tipoMoneda,props.dia,listaTarjetas))
-      console.log(periodo)
-    
-    },[fecha,tipoMoneda])
-
   useEffect(()=>{
-    if(tipoMoneda==="efectivo"){
+    if(tipoMoneda.nombre==="efectivo"){
       setCuotas(1)
     }
     if(tipoMovimiento==="pagotc"){
@@ -75,26 +67,29 @@ const IngresoMov: React.FC<any> = ({props}) => {
     }
   },[tipoMoneda,tipoMovimiento])
 
-  useEffect(()=>{
-    db.collection("usersData").doc(user.uid).collection("categorias").onSnapshot((querySnapshot) => {
-        setListaCategoria(listaVacia)
-        querySnapshot.forEach(doc => {
-            var objeto = {nombre:doc.data().nombre_categoria}
-            setListaCategoria(prevListaCategoria => [...prevListaCategoria, objeto]);
-        });
+  useEffect(() => {
+    db.collection("usersData").doc(user.uid).collection("info_importante").onSnapshot((querySnapshot) => {
+      setInfoImportante(listaVacia)
+      querySnapshot.forEach(doc => {
+          var objeto = {dia:doc.data().dia_pago,nombre:"efectivo"}
+          setInfoImportante(prevInfo => [...prevInfo, objeto]);
+      });
     })
-  },[])
-
-  useEffect(()=>{
     db.collection("usersData").doc(user.uid).collection("tarjetas").onSnapshot((querySnapshot) => {
-        setListaTarjetas(listaVacia)
-        querySnapshot.forEach(doc => {
-            var objeto = {nombre:doc.data().tarjeta_nombre,cupo:doc.data().tarjeta_cupo,dia:doc.data().tarjeta_dia_f}
-            setListaTarjetas(prevListaTarjeta => [...prevListaTarjeta, objeto]);
-        });
+      setListaTarjetas(listaVacia)
+      querySnapshot.forEach(doc => {
+          var objeto = {nombre:doc.data().tarjeta_nombre,cupo:doc.data().tarjeta_cupo,dia:doc.data().tarjeta_dia_f}
+          setListaTarjetas(prevListaTarjeta => [...prevListaTarjeta, objeto]);
+      });
+    })
+    db.collection("usersData").doc(user.uid).collection("categorias").onSnapshot((querySnapshot) => {
+      setListaCategoria(listaVacia)
+      querySnapshot.forEach(doc => {
+          var objeto = {nombre:doc.data().nombre_categoria}
+          setListaCategoria(prevListaCategoria => [...prevListaCategoria, objeto]);
+      });
     })
   },[])
-
   
   const agregarGasto = () => {
      try{
@@ -105,7 +100,7 @@ const IngresoMov: React.FC<any> = ({props}) => {
                 mov_periodo:periodo,
                 mov_fecha: fecha,
                 mov_cuotas: "1",
-                mov_tipo_moneda: tipoMoneda,
+                mov_tipo_moneda: tipoMoneda.nombre,
                 mov_frec_mov: frecMov,
                 mov_tipo_mov: "ingreso",
                 mov_descripcion: descripcion,
@@ -117,7 +112,7 @@ const IngresoMov: React.FC<any> = ({props}) => {
                 mov_periodo:periodo,
                 mov_fecha: fecha,
                 mov_cuotas: "1",
-                mov_tipo_moneda: "efectivo",
+                mov_tipo_moneda: tipoMoneda.nombre,
                 mov_frec_mov: frecMov,
                 mov_tipo_mov: "gasto",
                 mov_descripcion: descripcion,
@@ -131,7 +126,7 @@ const IngresoMov: React.FC<any> = ({props}) => {
                 mov_periodo:periodo,
                 mov_fecha: fecha,
                 mov_cuotas: "1",
-                mov_tipo_moneda: tipoMoneda,
+                mov_tipo_moneda: tipoMoneda.nombre,
                 mov_frec_mov: frecMov,
                 mov_tipo_mov: tipoMovimiento,
                 mov_descripcion: descripcion,
@@ -141,30 +136,54 @@ const IngresoMov: React.FC<any> = ({props}) => {
             }
             
         }else{
-          var contador = 0;
+          
           var montoCuota = parseInt(monto)/cuotas
-          for(var i=parseInt(periodo);i<parseInt(periodo)+cuotas;i++){
-            var cuotasRestantes = cuotas-contador
+          agregar(
+            {
+              mov_periodo:periodo,
+              mov_fecha: fecha,
+              mov_cuotas: cuotas,
+              mov_tipo_moneda: tipoMoneda.nombre,
+              mov_frec_mov: frecMov,
+              mov_tipo_mov: tipoMovimiento,
+              mov_descripcion: descripcion,
+              mov_monto: montoCuota.toString(),
+              mov_categoria: categoria
+            },"movimientos",user.uid);
+
+          var contador = 0;
+          
+          var periodoSeparado = periodo.split("-")
+          var periodoIni = periodoSeparado[0]
+          var periodoFin = periodoSeparado[1]
+          var pIniMes = parseInt(periodoIni.substring(4,5))
+          var pFinMes = parseInt(periodoFin.substring(4,5))
+
+          for(var i=0;i<cuotas-1;i++){
+            var cuotasRestantes = cuotas-i
+            var sumPIniMes = pIniMes++
+            var sumPFinMes = pFinMes++
+            var nuevoPiniMes = sumPIniMes<=9?"0"+sumPIniMes.toString():sumPIniMes.toString()
+            var nuevoPfinMes = sumPFinMes<=9?"0"+sumPFinMes.toString():sumPFinMes.toString()
+            var nuevoPeriodo = periodoIni.substring(0,3)+nuevoPiniMes+periodoIni.substring(6,7)+periodoIni.substring(0,3)+nuevoPfinMes+periodoIni.substring(6,7)
             const id = agregar(
               {
-                mov_periodo:i.toString(),
+                mov_periodo:nuevoPeriodo,
                 mov_fecha: fecha,
                 mov_cuotas: cuotasRestantes.toString(),
-                mov_tipo_moneda: tipoMoneda,
+                mov_tipo_moneda: tipoMoneda.nombre,
                 mov_frec_mov: frecMov,
                 mov_tipo_mov: tipoMovimiento,
                 mov_descripcion: descripcion,
                 mov_monto: montoCuota.toString(),
                 mov_categoria: categoria
               },"movimientos",user.uid);
-            contador++;
-            console.log(i)
+              console.log(id)
           }
         }
        
         setShowtoast(true)
         setFecha(new Date().toISOString())
-        setPeriodo('')
         setCuotas(1)
         setTipoMoneda('')
         setFrecMov('')
@@ -173,7 +192,6 @@ const IngresoMov: React.FC<any> = ({props}) => {
         setDescripcion('')
         setMonto('')
         setMensaje("Movimiento ingresado correctamente");
-        console.log(periodo)
     }catch(error){
       setMensaje(error)
     }
@@ -193,14 +211,14 @@ const IngresoMov: React.FC<any> = ({props}) => {
             </IonItem>
             <IonItem>
               <IonLabel>Fecha compra</IonLabel>
-              <IonDatetime displayFormat="YYYY-MM-DD" value={fecha} onIonChange={(e: any) => {setFecha(e.detail.value!)}}></IonDatetime>
+              <IonDatetime displayFormat="YYYY-MM-DD" value={fecha} onIonChange={(e: any) => {setFecha(e.detail.value!);dispatchPeriodo({fecha:e.detail.value,moneda:tipoMoneda,info:infoImportante})}}></IonDatetime>
             </IonItem>
             <IonItem>
               <IonLabel>Moneda</IonLabel>
-              <IonSelect value={tipoMoneda} onIonChange={(e:any) => {setTipoMoneda(e.detail.value)}} interface="popover">
-                <IonSelectOption value="efectivo">Efectivo</IonSelectOption>
+              <IonSelect value={tipoMoneda}  onIonChange={(e:any) => {setTipoMoneda(e.detail.value);dispatchPeriodo({fecha:fecha,moneda:e.detail.value,info:infoImportante})}} interface="popover">
+                <IonSelectOption value={infoImportante[0]}>Efectivo</IonSelectOption>
                 {listaTarjetas.map((tarjeta,i) => (
-                  <IonSelectOption key={i} value={tarjeta.nombre}>{tarjeta.nombre}</IonSelectOption>
+                  <IonSelectOption key={i} value={tarjeta}>{tarjeta.nombre}</IonSelectOption>
                 ))}
               </IonSelect>
               <IonButtons>
@@ -216,7 +234,7 @@ const IngresoMov: React.FC<any> = ({props}) => {
                 <IngresoTarjeta/>
               </IonPopover>
             </IonItem>
-            {tipoMoneda!="efectivo" && tipoMoneda != '' && tipoMovimiento != "pagotc"?
+            {tipoMoneda.nombre!="efectivo" && tipoMoneda.nombre! && tipoMovimiento != "pagotc"?
               <IonItem>
                 <IonLabel>Cuotas</IonLabel>
                 <IonInput

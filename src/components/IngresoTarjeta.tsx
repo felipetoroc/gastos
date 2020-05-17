@@ -23,6 +23,9 @@ const IngresoTarjeta: React.FC = () => {
     const docid = agregarTarjeta(nombre,cupo,dia,user.uid);
     setShowtoast(true)
     setMensaje("Tarjeta guardada");
+    setNombre('')
+    setCupo('')
+    setDia('')
   };
 
   return (

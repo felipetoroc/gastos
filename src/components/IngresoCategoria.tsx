@@ -22,6 +22,7 @@ const IngresoCategoria: React.FC = () => {
     const docid = agregarCategoria(texto,user.uid);
     setShowtoast(true)
     setMensaje("Categoría guardada");
+    setTexto('')
   };
 
   return (
