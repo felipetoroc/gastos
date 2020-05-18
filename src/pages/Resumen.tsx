@@ -198,11 +198,12 @@ const Resumen: React.FC = () => {
                     </IonFabButton>
                 </IonFab>
                 <IonPopover
-                isOpen={popover.show}
-                event={popover.evento}
-                onDidDismiss={e => setPopover({show:false, evento:e})}
-                >
-                <IngresoMov/>
+                   
+                    isOpen={popover.show}
+                    event={popover.evento}
+                    onDidDismiss={e => setPopover({show:false, evento:e})}
+                    >
+                    <IngresoMov/>
                 </IonPopover>
             </IonContent>
         </IonPage>

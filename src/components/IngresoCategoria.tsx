@@ -1,4 +1,4 @@
-import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
+import {IonGrid,IonRow,IonCol,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonContent } from '@ionic/react';
 import React , {useState,useContext, useEffect} from 'react';
 import './IngresoCategoria.css';
 import {agregar} from '../firebaseConfig'
@@ -26,26 +26,30 @@ const IngresoCategoria: React.FC = () => {
   };
 
   return (
-    <>
-          <IonList>
-            <IonItemDivider>Nombre categoría</IonItemDivider>
-            <IonItem>
-              <IonInput
-                value={texto} 
-                onIonChange={(e: any) => setTexto(e.target.value)}>
-              </IonInput>
-            </IonItem>
-            <section>
-              <IonButton expand="block" onClick={agregar}>Guardar</IonButton>
-            </section>
-          </IonList>
-          <IonToast
-            isOpen={showtoast}
-            onDidDismiss={() => setShowtoast(false)}
-            message={mensaje}
-            duration={500}
-          />
-      </>
+    <IonContent>
+      <IonGrid>
+        <IonRow>
+          <IonCol>
+            <IonInput
+              placeholder="Ingresa un nombre"
+              value={texto} 
+              onIonChange={(e: any) => setTexto(e.target.value)}>
+            </IonInput>
+          </IonCol>
+        </IonRow>
+        <IonRow>
+          <IonCol>
+            <IonButton color="success" expand="block" onClick={agregar}>Agregar</IonButton>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+      <IonToast
+        isOpen={showtoast}
+        onDidDismiss={() => setShowtoast(false)}
+        message={mensaje}
+        duration={500}
+      />
+    </IonContent>
   );
 };
 
