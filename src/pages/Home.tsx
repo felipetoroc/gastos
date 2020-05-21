@@ -16,23 +16,6 @@ const Home: React.FC = () => {
   const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
   useEffect(() => {
-    db.collection("usersData").doc(user.uid).collection("movimientos").orderBy("mov_periodo","asc").onSnapshot((querySnapshot) => {
-        setListaPeriodo(listaVacia)
-        var prevPeriodo = '';
-        querySnapshot.forEach(doc => {
-            var objeto = {
-                periodo:doc.data().mov_periodo,
-            }
-            if(prevPeriodo != objeto.periodo){
-                setListaPeriodo(prevListaPeriodo => [...prevListaPeriodo, {periodo: objeto.periodo}])
-            }
-            prevPeriodo = objeto.periodo
-            console.log(prevPeriodo)
-        });
-    })
-  },[])
-
-  useEffect(() => {
     db.collection("usersData").doc(user.uid).collection("movimientos").orderBy("mov_fecha").onSnapshot((querySnapshot) => {
         setlistaMov(listaVacia)
         querySnapshot.forEach(doc => {
@@ -70,39 +53,20 @@ const Home: React.FC = () => {
         </IonHeader>
         <IonContent className="ion-padding">
             <IonList>
-                <IonItem>
-                    <IonLabel>Selecciona un periodo</IonLabel>
-                    <IonSelect value={selectedPeriodo} onIonChange={(e:any) => setSelectedPeriodo(e.target.value)} interface="popover">
-                        {listaPeriodo.map((per,i) => (
-                            <IonSelectOption key={i} value={per.periodo}>{per.periodo}</IonSelectOption>
-                        ))}
-                    </IonSelect>
-                </IonItem>
-            </IonList>
-            <IonList>
                 <IonGrid>
                 {listaMov.map((mov,i,arr) => { 
-                    if(mov.periodo === selectedPeriodo){
-                        const previousItem = arr[i - 1];
-                        return(
-                            <div key={i}>
-                                {i>=1?
-                                    mov.fecha!=previousItem.fecha?
-                                        <IonRow>
-                                            <IonCol><IonLabel color="primary">{mov.fecha}</IonLabel></IonCol>
-                                        </IonRow>
-                                        :<div></div>
-                                :<IonRow>
-                                    <IonCol><IonLabel color="primary">{mov.fecha}</IonLabel></IonCol>
-                                </IonRow>}   
-                                <IonRow>
-                                    <IonCol>{mov.tipo_moneda}</IonCol>
-                                    <IonCol>{mov.descripcion}</IonCol>
-                                    <IonCol>{mov.tipo_movimiento==="gasto"?<span style={{color:"red"}}>-{mov.monto}</span >:<span style={{color:"green"}}>{mov.monto}</span>}</IonCol>
-                                </IonRow>
-                            </div>  
-                        )
-                    }
+                    return(
+                        <div key={i}>
+                            <IonRow>
+                                <IonCol><IonLabel color="primary">{mov.fecha}</IonLabel></IonCol>
+                            </IonRow>
+                            <IonRow>
+                                <IonCol>{mov.tipo_moneda}</IonCol>
+                                <IonCol>{mov.descripcion}</IonCol>
+                                <IonCol>{mov.tipo_movimiento==="gasto"?<span style={{color:"red"}}>-{mov.monto}</span >:<span style={{color:"green"}}>{mov.monto}</span>}</IonCol>
+                            </IonRow>
+                        </div>  
+                    )
                 })}
                 </IonGrid>
             </IonList>

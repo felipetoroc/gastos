@@ -1,4 +1,4 @@
-import {IonSelectPopover,IonGrid,IonRow,IonCol,IonHeader,IonContent,IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast,IonList, IonButton, IonItem, IonInput, IonTitle, IonLabel, IonSelect } from '@ionic/react';
+import {IonLabel,IonGrid,IonRow,IonCol,IonContent,IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast, IonButton,  IonInput, IonTitle, IonSelect } from '@ionic/react';
 import React , {useState,useEffect,useContext,useReducer} from 'react';
 import './IngresoMov.css';
 import {add} from 'ionicons/icons';
@@ -18,7 +18,7 @@ const IngresoMov: React.FC = () => {
   
   const [fecha, setFecha] = useState(new Date().toISOString())
   const [cuotas, setCuotas] = useState('')
-  const [tipoMoneda, setTipoMoneda] = useState<any>({})
+  const [tipoMoneda, setTipoMoneda] = useState('')
   const [frecMov, setFrecMov] = useState('')
   const [tipoMovimiento, setTipoMovimiento] = useState('')
   const [descripcion,setDescripcion] = useState('');
@@ -31,12 +31,12 @@ const IngresoMov: React.FC = () => {
   const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
   useEffect(()=>{
-    if(tipoMoneda.nombre==="efectivo"){
+    if(tipoMoneda === "efectivo"){
       setCuotas('1')
     }else{
       setCuotas('')
     }
-    if(tipoMovimiento==="pagotc"){
+    if(tipoMovimiento === "pagotc"){
       setCuotas('1')
     }
   },[tipoMoneda,tipoMovimiento])
@@ -60,7 +60,7 @@ const IngresoMov: React.FC = () => {
 
   
   const agregarGasto = () => {
-    
+
     for(var i=0;i<parseInt(cuotas);i++){
       var montoCuota = parseInt(monto)/parseInt(cuotas)
       var nuevaFecha = new Date(fecha)
@@ -70,7 +70,7 @@ const IngresoMov: React.FC = () => {
       {
         mov_fecha: nuevaFecha.toISOString(),
         mov_cuotas: nuevaCuota.toString(),
-        mov_tipo_moneda: tipoMoneda.nombre,
+        mov_tipo_moneda: tipoMoneda,
         mov_frec_mov: frecMov,
         mov_tipo_mov: tipoMovimiento,
         mov_descripcion: descripcion,
@@ -97,7 +97,8 @@ const IngresoMov: React.FC = () => {
         <IonRow>
           <IonCol>
             <IonTitle><IonDatetime placeholder="Fecha" displayFormat="YYYY-MM-DD" value={fecha} onIonChange={(e: any) => {setFecha(e.detail.value!)}}></IonDatetime>
-            </IonTitle>          
+            </IonTitle>
+                     
           </IonCol>
         </IonRow>
         <IonRow>
@@ -115,7 +116,7 @@ const IngresoMov: React.FC = () => {
             <IonSelect placeholder={tipoMovimiento=="pagotc"?"Tarjeta a pagar":tipoMovimiento=="ingreso"?"¿A qué medio?":"Medio de pago"} value={tipoMoneda}  onIonChange={(e:any) => {setTipoMoneda(e.detail.value)}} interface="popover">
               {tipoMovimiento!="pagotc"?<IonSelectOption value="efectivo">Efectivo</IonSelectOption>:<></>}
               {listaTarjetas.map((tarjeta,i) => (
-                <IonSelectOption key={i} value={tarjeta}>{tarjeta.nombre}</IonSelectOption>
+                <IonSelectOption key={i} value={tarjeta.nombre}>{tarjeta.nombre}</IonSelectOption>
               ))}
             </IonSelect>
           </IonCol>
@@ -175,7 +176,7 @@ const IngresoMov: React.FC = () => {
                 </IonInput>
           </IonCol>
         </IonRow>
-        {tipoMoneda.nombre!="efectivo" && tipoMoneda.nombre! && tipoMovimiento != "pagotc"?
+        {tipoMoneda!="efectivo" && tipoMoneda! && tipoMovimiento != "pagotc"?
           <IonRow>
             <IonCol>
               <IonInput

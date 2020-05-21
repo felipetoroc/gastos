@@ -10,8 +10,9 @@ const Mantenedor: React.FC = () => {
     const [showtoast,setShowtoast] = useState(false);
     const [mensaje,setMensaje] = useState('');
     const [sueldo,setSueldo] = useState('');
-    const [efectivo,setEfectivo] = useState('');
     const [pago,setPago] = useState('');
+    const [sueldoPagado, setSueldoPagado] = useState(false);
+    const [mesPago, setMesPago] = useState('')
     const [idDoc,setIdDoc] = useState<any>();
 
     const user = useContext(UserContext)
@@ -21,8 +22,9 @@ const Mantenedor: React.FC = () => {
             querySnapshot.forEach(doc => {
                 if(doc.id){
                     setSueldo(doc.data().monto_sueldo)
-                    setEfectivo(doc.data().efectivo_inicial)
                     setPago(doc.data().dia_pago)
+                    setSueldoPagado(doc.data().sueldo_pagado)
+                    setMesPago(doc.data().mes_ultimo_pago)
                     setIdDoc(doc.id)
                 }
             });
@@ -35,16 +37,18 @@ const Mantenedor: React.FC = () => {
         if(!idDoc){
             var docid = agregar({
                 monto_sueldo: sueldo,
-                efectivo_inicial: efectivo,
-                dia_pago: pago
+                dia_pago: pago,
+                sueldo_pagado:sueldoPagado,
+                mes_ultimo_pago:mesPago
             },"info_importante",user.uid);
             setShowtoast(true)
             setIdDoc(docid);
         }else{
             actualizar({
                 monto_sueldo: sueldo,
-                efectivo_inicial: efectivo,
-                dia_pago: pago
+                dia_pago: pago,
+                sueldo_pagado:sueldoPagado,
+                mes_ultimo_pago:mesPago
             },"info_importante",idDoc,user.uid);
             setShowtoast(true)
         }
@@ -76,19 +80,13 @@ const Mantenedor: React.FC = () => {
                     </IonInput>
                     </IonItem>
                     <IonItem>
-                    <IonLabel>Efectivo inicial</IonLabel>
-                    <IonInput
-                        value={efectivo} 
-                        onIonChange={(e: any) => setEfectivo(e.target.value)}>
-                    </IonInput>
-                    </IonItem>
-                    <IonItem>
                     <IonLabel>Dia de pago</IonLabel>
                     <IonInput
                         value={pago} 
                         onIonChange={(e: any) => setPago(e.target.value)}>
                     </IonInput>
                     </IonItem>
+                    
                     <section>
                     <IonButton expand="block" onClick={agregarDatos}>Guardar</IonButton>
                     </section>

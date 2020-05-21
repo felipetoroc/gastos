@@ -2,7 +2,7 @@ import React,{useState, useEffect,useContext} from 'react';
 import { Redirect, Route} from 'react-router-dom';
 import {IonProgressBar,IonButton, IonApp, IonRouterOutlet, IonButtons, IonMenuButton, IonIcon, IonToolbar } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import {auth,logout,db} from './firebaseConfig';
+import {auth,agregar,db,actualizar} from './firebaseConfig';
 import {useHistory} from 'react-router-dom'
 
 
@@ -90,6 +90,57 @@ const App: React.FC = () => {
       setBusy(false)
     });
   },[])
+
+  useEffect(() => {
+    if(logedIn===true){
+      db.collection("usersData").doc(userData.uid).collection("info_importante").onSnapshot((querySnapshot) => {
+        querySnapshot.forEach(doc => {
+            var info_importante = {mes:doc.data().mes_ultimo_pago,pagado:doc.data().sueldo_pagado,dia:doc.data().dia_pago,sueldo:doc.data().monto_sueldo,id:doc.id}
+            if(typeof info_importante!= "undefined"){
+              var fechaActual = new Date()
+              var fechaPago = new Date()
+            
+              if(info_importante.mes != ""){
+                if(fechaActual.getMonth() != info_importante.mes){
+                  actualizar({
+                    monto_sueldo: info_importante.sueldo,
+                    dia_pago: info_importante.dia,
+                    sueldo_pagado: false,
+                    mes_ultimo_pago: ""
+                  },"info_importante",info_importante.id,userData.uid);
+                }
+              }
+ 
+              fechaPago.setDate(info_importante.dia)
+
+              if(fechaActual.getDate() === fechaPago.getDate()){
+                if(info_importante.pagado === false){
+                  const id = agregar(
+                    {
+                      mov_fecha: fechaActual.toISOString(),
+                      mov_cuotas: "1",
+                      mov_tipo_moneda: "efectivo",
+                      mov_frec_mov: "fijo",
+                      mov_tipo_mov: "ingreso",
+                      mov_descripcion: "sueldo",
+                      mov_monto: info_importante.sueldo,
+                      mov_categoria: "sueldo"
+                    },"movimientos",userData.uid);
+  
+                  actualizar({
+                      monto_sueldo: info_importante.sueldo,
+                      dia_pago: info_importante.dia,
+                      sueldo_pagado: true,
+                      mes_ultimo_pago: fechaActual.getMonth()
+                    },"info_importante",info_importante.id,userData.uid);
+                }
+              }
+              
+            }
+        });
+      })
+    }
+  },[logedIn])
 
     return (
       <UserContext.Provider value={userData}>
