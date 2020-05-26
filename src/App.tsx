@@ -82,8 +82,10 @@ const App: React.FC = () => {
   useEffect(()=>{
     auth.onAuthStateChanged((user) => {
       if(user){
-        setUserData({email:user.email,uid:user.uid})
-        setLogedIn(true)
+        
+          setUserData({email:user.email,uid:user.uid})
+          setLogedIn(true)
+      
       }else{
         setLogedIn(false)
       }
