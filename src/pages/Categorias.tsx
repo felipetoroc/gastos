@@ -1,8 +1,8 @@
-import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonInput, IonLabel, IonButtons, IonButton } from '@ionic/react';
+import {IonList, IonIcon,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow,IonCol, IonGrid, IonInput, IonLabel, IonButtons, IonButton } from '@ionic/react';
 import React, {useState,useEffect,useContext} from 'react';
 import './Categorias.css';
 import {db,eliminar} from '../firebaseConfig'
-import { add,play,caretBack } from 'ionicons/icons';
+import { add,trash } from 'ionicons/icons';
 import {agregarCategoria} from '../components/IngresoCategoria'
 import {UserContext} from '../App'
 
@@ -12,7 +12,6 @@ const Categorias: React.FC = () => {
   const [lista,setLista] = useState(listaVacia);
   const [nombre, setNombre] = useState('')
   const user = useContext(UserContext)
-  const [userID, setUserID] = useState('')
 
 
   useEffect(() => {
@@ -38,42 +37,38 @@ const Categorias: React.FC = () => {
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
+            
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonButton routerLink="/Mantenedor"><IonIcon icon={caretBack} /></IonButton>Información inicial
-                    </IonButtons>
                     <IonLabel>Lista de categorias</IonLabel>
                 </IonToolbar>
             </IonHeader>
-            <IonItem>
-                <IonLabel>Nueva categoria</IonLabel>
-                <IonInput placeholder="Ingrese nombre" value={nombre} onIonChange={(e:any) => {setNombre(e.target.value)}}>
-                </IonInput>
-                <IonButtons>
-                    <IonButton color="success" onClick={() => {agregarCategoria(nombre,user.uid);setNombre('')}}><IonIcon icon={add}></IonIcon>
-                    </IonButton>
-                </IonButtons>
-            </IonItem>
-            <IonGrid>
-            <IonRow>
-                <IonCol>Nombre de categorias</IonCol>
-            </IonRow>
-            {lista.map((cate,i) => (
-            <IonRow key={i}>
-                <IonItemSliding>
-                    <IonItem>  
-                        <IonCol>{cate.nombre}</IonCol>
+            <IonList>
+                <IonItem>
+                    <IonLabel>Nueva categoria:</IonLabel>
+                    <IonInput slot="end" placeholder="Ingrese nombre" value={nombre} onIonChange={(e:any) => {setNombre(e.target.value)}}>
+                    </IonInput>
+                    <IonButtons slot="end">
+                        <IonButton color="success" onClick={() => {agregarCategoria(nombre,user.uid);setNombre('')}}><IonIcon icon={add}></IonIcon>
+                        </IonButton>
+                    </IonButtons>
+                </IonItem>
+            </IonList>
+            <IonList>
+                {lista.map((cate,i) => (
+                <IonItemSliding key={i}>
+                    <IonItem>
+                        <IonLabel>{cate.nombre}</IonLabel>  
                     </IonItem>
-                    <IonItemOptions side="end" onClick={() => {eliminarCate(cate.id)}}>
-                        <IonItemOption color="danger" expandable>
+                    <IonItemOptions side="end" onIonSwipe={() => eliminarCate(cate.id)}>
+                        <IonItemOption color="danger" expandable >
                             Eliminar
                         </IonItemOption>
                     </IonItemOptions>
+                    
                 </IonItemSliding>
-            </IonRow>
             ))}
-            </IonGrid>
+            </IonList>
         </IonContent>
     </IonPage>
   )

@@ -20,8 +20,8 @@ const Menu: React.FC = () => (
                 <IonItem routerLink="/Fijos" routerDirection="none" lines="none" >
                     <IonLabel>Gastos fijos</IonLabel>
                 </IonItem>
-                <IonItem routerLink="/Mantenedor" routerDirection="none" lines="none" >
-                    <IonLabel>Configuración</IonLabel>
+                <IonItem routerLink="/Categorias" routerDirection="none" lines="none" >
+                    <IonLabel>Categorias</IonLabel>
                 </IonItem>
             </IonMenuToggle>
         </IonContent>

@@ -24,13 +24,11 @@ const Fijos: React.FC = () => {
   },[])
 
   useEffect(() => {
-    db.collection("usersData").doc(user.uid).collection("gastos_fijos").onSnapshot((querySnapshot) => {
-        console.log("vacia arreglo")
+    db.collection("usersData").doc(user.uid).collection("gastos_fijos").orderBy("descripcion").onSnapshot((querySnapshot) => {
         setListaGastoFijo(listaVacia)
         querySnapshot.forEach(doc => {
             var objeto = {id:doc.id,descripcion:doc.data().descripcion,monto:doc.data().monto}
             setListaGastoFijo(prevListaGasto => [...prevListaGasto, objeto]);
-            console.log("carga arreglo")
         });
     })
   },[])
@@ -42,36 +40,39 @@ const Fijos: React.FC = () => {
   return (
     <IonPage>
         <IonHeader>
-            <IonToolbar>
-                <IonTitle>Lista gastos fijos</IonTitle>
+            <IonToolbar><IonTitle>Lista gastos fijos</IonTitle>
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle>Lista gastos fijos</IonTitle>
+                </IonToolbar>
+            </IonHeader>
             <IonList>
                 <IonItem>
-                    <IonLabel>TOTAL GASTOS FIJOS: ${total}</IonLabel>
+                    <IonLabel><b>Total gastos fijos:</b> </IonLabel>
+                    <IonLabel slot="end" color="danger">-${total}</IonLabel>
                 </IonItem>
             </IonList>
             <IonList>
-            <IonRow>
-                <IonCol>Descripcion</IonCol>
-                <IonCol>Monto</IonCol>
-            </IonRow>
-            {listaGastoFijo.map((gasto,i) => (
-            <IonRow key={i}>
-                <IonItemSliding>
+                <IonItem>
+                    <IonLabel><b>Descripcion</b></IonLabel>
+                    <IonLabel slot="end"><b>Monto</b></IonLabel>
+                </IonItem>
+                {listaGastoFijo.map((gasto,i) => (
+                <IonItemSliding key={i}>
                     <IonItem>  
-                        <IonCol>{gasto.descripcion}</IonCol>
-                        <IonCol>{gasto.monto}</IonCol>
+                        <IonLabel>{gasto.descripcion}</IonLabel>
+                        <IonLabel slot="end" color="danger">-${gasto.monto}</IonLabel>
                     </IonItem>
-                    <IonItemOptions side="end" onClick={() => {eliminarGastoFijo(gasto.id)}}>
+                    <IonItemOptions side="end" onIonSwipe={() => {eliminarGastoFijo(gasto.id)}}>
                         <IonItemOption color="danger" expandable>
                             Eliminar
                         </IonItemOption>
                     </IonItemOptions>
                 </IonItemSliding>
-            </IonRow>
-            ))}
+                ))}
             </IonList>
             <IonFab vertical="bottom" horizontal="end" slot="fixed">
                 <IonFabButton onClick={(e: any) => {e.persist();setPopover({show:true,evento:e})}}>
@@ -79,10 +80,9 @@ const Fijos: React.FC = () => {
                 </IonFabButton>
             </IonFab>
             <IonPopover
-            isOpen={popover.show}
-            event={popover.evento}
-            onDidDismiss={e => setPopover({show:false, evento:e})}
-            
+                isOpen={popover.show}
+                event={popover.evento}
+                onDidDismiss={e => setPopover({show:false, evento:e})}
             >
                 <IngresoGastoFijo/>
             </IonPopover>

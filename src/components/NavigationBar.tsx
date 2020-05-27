@@ -8,7 +8,7 @@ const NavigationBar: React.FC = () => {
     const user = useContext(UserContext);
 
     async function logoutUser(){
-        var res = await logout();
+        await logout();
         
     }
     return(

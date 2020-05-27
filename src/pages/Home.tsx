@@ -57,31 +57,37 @@ const Home: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonList>
-                <IonGrid>
+                
                 {listaMov.map((mov,i,arr) => { 
+                    
                     var x = i;
                     if(i>0){
                         x = x-1
                     }
                     return(
-                        <div key={i}>
+                        <div  key={i}>
                             {arr[x].fecha!=mov.fecha || i == 0?
-                                <IonRow>
-                                    <IonCol><IonLabel color="primary">{mov.fecha}</IonLabel></IonCol>
-                                </IonRow>
+                                <IonItem>
+                                    <IonLabel color="primary">{mov.fecha}</IonLabel>
+                                </IonItem>
                                 :
                                 <></>
                             }
-                            <IonRow>
-                                <IonCol>{mov.tipo_moneda}</IonCol>
-                                <IonCol>{mov.descripcion}</IonCol>
-                                <IonCol>{mov.tipo_movimiento==="gasto"?<span style={{color:"red"}}>-{mov.monto}</span >:<span style={{color:"green"}}>{mov.monto}</span>}</IonCol>
-                                <IonCol><IonItem button onClick={() => {eliminarMov(mov.id) }}><span style={{color:"red"}}>-</span ></IonItem></IonCol>
-                            </IonRow>
-                        </div>  
+                            <IonItemSliding>
+                                <IonItem>
+                                    <IonLabel>{mov.tipo_moneda}</IonLabel>
+                                    <IonLabel>{mov.descripcion}</IonLabel>
+                                    <IonLabel>{mov.tipo_movimiento==="gasto"?<span style={{color:"red"}}>-{mov.monto}</span >:<span style={{color:"green"}}>{mov.monto}</span>}</IonLabel>
+                                </IonItem>
+                                <IonItemOptions side="end" onIonSwipe={() => {eliminarMov(mov.id)}}>
+                                    <IonItemOption color="danger" expandable>
+                                        Eliminar
+                                    </IonItemOption>
+                                </IonItemOptions>
+                            </IonItemSliding>
+                        </div>
                     )
                 })}
-                </IonGrid>
             </IonList>
         </IonContent>
     </IonPage>

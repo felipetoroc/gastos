@@ -11,8 +11,6 @@ const Mantenedor: React.FC = () => {
     const [mensaje,setMensaje] = useState('');
     const [sueldo,setSueldo] = useState('');
     const [pago,setPago] = useState('');
-    const [sueldoPagado, setSueldoPagado] = useState(false);
-    const [mesPago, setMesPago] = useState('')
     const [idDoc,setIdDoc] = useState<any>();
 
     const user = useContext(UserContext)
@@ -23,8 +21,6 @@ const Mantenedor: React.FC = () => {
                 if(doc.id){
                     setSueldo(doc.data().monto_sueldo)
                     setPago(doc.data().dia_pago)
-                    setSueldoPagado(doc.data().sueldo_pagado)
-                    setMesPago(doc.data().mes_ultimo_pago)
                     setIdDoc(doc.id)
                 }
             });
@@ -38,8 +34,6 @@ const Mantenedor: React.FC = () => {
             var docid = agregar({
                 monto_sueldo: sueldo,
                 dia_pago: pago,
-                sueldo_pagado:sueldoPagado,
-                mes_ultimo_pago:mesPago
             },"info_importante",user.uid);
             setShowtoast(true)
             setIdDoc(docid);
@@ -47,8 +41,6 @@ const Mantenedor: React.FC = () => {
             actualizar({
                 monto_sueldo: sueldo,
                 dia_pago: pago,
-                sueldo_pagado:sueldoPagado,
-                mes_ultimo_pago:mesPago
             },"info_importante",idDoc,user.uid);
             setShowtoast(true)
         }
