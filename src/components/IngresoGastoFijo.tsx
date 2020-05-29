@@ -1,4 +1,4 @@
-import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
+import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonContent } from '@ionic/react';
 import React , {useState,useContext} from 'react';
 import './IngresoGastoFijo.css';
 import {agregar} from '../firebaseConfig'
@@ -21,33 +21,32 @@ const IngresoGastoFijo: React.FC = () => {
   };
 
   return (
-    <>
-          <IonList>
-            <IonItemDivider>Descripción gasto</IonItemDivider>
-            <IonItem>
-              <IonInput
-                value={texto} 
-                onIonChange={(e: any) => setTexto(e.target.value)}>
-              </IonInput>
-            </IonItem>
-            <IonItemDivider>Monto</IonItemDivider>
-            <IonItem>
-              <IonInput
-                value={monto} 
-                onIonChange={(e: any) => setMonto(e.target.value)}>
-              </IonInput>
-            </IonItem>
-            <section>
-              <IonButton expand="block" onClick={agregarGasto}>Guardar</IonButton>
-            </section>
-          </IonList>
-          <IonToast
-            isOpen={showtoast}
-            onDidDismiss={() => setShowtoast(false)}
-            message={mensaje}
-            duration={500}
-          />
-      </>
+    <IonContent className="ion-padding">
+      <IonList>
+        <IonItem>
+          <IonInput
+            placeholder="Descripción"
+            value={texto} 
+            onIonChange={(e: any) => setTexto(e.target.value)}>
+          </IonInput>
+        </IonItem>
+        <IonItem>
+          <IonInput
+            placeholder="Monto"
+            value={monto} 
+            onIonChange={(e: any) => setMonto(e.target.value)}>
+          </IonInput>
+        </IonItem>
+          
+      </IonList>
+      <IonButton expand="block" onClick={agregarGasto}>Guardar</IonButton>
+      <IonToast
+        isOpen={showtoast}
+        onDidDismiss={() => setShowtoast(false)}
+        message={mensaje}
+        duration={500}
+      />
+    </IonContent>
   );
 };
 

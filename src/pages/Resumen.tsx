@@ -59,7 +59,7 @@ const Resumen: React.FC = () => {
     const [iTarjetasf, setItarjetasf] = useState<any>([])
     const [iTarjetasv, setItarjetasv] = useState<any>([])
 
-    const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
+    const [popover, setPopover] = useState(false);
 
 
     useEffect(()=>{
@@ -271,15 +271,15 @@ const Resumen: React.FC = () => {
                     })} 
                 </IonList>
                 <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton onClick={(e: any) => {e.persist();setPopover({show:true,evento:e})}}>
+                    <IonFabButton onClick={(e: any) => {e.persist();setPopover(true)}}>
                         <IonIcon icon={add} />
                     </IonFabButton>
                 </IonFab>
                 <IonPopover
                    
-                    isOpen={popover.show}
-                    event={popover.evento}
-                    onDidDismiss={e => setPopover({show:false, evento:e})}
+                    isOpen={popover}
+                    animated={false}
+                    onDidDismiss={e => setPopover(false)}
                     >
                     <IngresoMov/>
                 </IonPopover>

@@ -49,7 +49,7 @@ const IngresoMov: React.FC = () => {
           setListaTarjetas(prevListaTarjeta => [...prevListaTarjeta, objeto]);
       });
     })
-    db.collection("usersData").doc(user.uid).collection("categorias").onSnapshot((querySnapshot) => {
+    db.collection("usersData").doc(user.uid).collection("categorias").orderBy("nombre_categoria").onSnapshot((querySnapshot) => {
       setListaCategoria(listaVacia)
       querySnapshot.forEach(doc => {
           var objeto = {nombre:doc.data().nombre_categoria}
@@ -88,7 +88,7 @@ const IngresoMov: React.FC = () => {
     setCategoria('')
     setDescripcion('')
     setMonto('')
-    setMensaje("Movimiento ingresado correctamente");
+    setMensaje("Movimiento ingresado");
   };
 
   return (
@@ -139,13 +139,10 @@ const IngresoMov: React.FC = () => {
         </IonRow>
         <IonRow>
           <IonCol>
-            <IonSelect placeholder="Categoría" value={categoria} onIonChange={e => setCategoria(e.detail.value)} interface="popover">
+            <IonSelect placeholder="Categoría" value={categoria} onIonChange={e => setCategoria(e.detail.value)} interface="action-sheet">
               {listaCategoria.map((cate,i) => (
                 <IonSelectOption key={i} value={cate.nombre}>{cate.nombre}</IonSelectOption>
               ))}
-              <IonSelectOption onClick={(e: any) => {e.persist();setPopoverCate({show:true,evento:e})}}>
-                Nuevo
-              </IonSelectOption>
             </IonSelect>
           </IonCol>
           <IonCol size="2">

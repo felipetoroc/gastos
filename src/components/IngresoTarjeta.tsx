@@ -1,4 +1,4 @@
-import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
+import {IonToast, IonList, IonButton, IonItem, IonInput, IonContent } from '@ionic/react';
 import React , {useState,useContext} from 'react';
 import './IngresoCategoria.css';
 import {agregar} from '../firebaseConfig'
@@ -29,32 +29,30 @@ const IngresoTarjeta: React.FC = () => {
   };
 
   return (
-    <>
+    <IonContent className="ion-padding">
           <IonList>
-            <IonItemDivider>Nombre descriptivo</IonItemDivider>
             <IonItem>
               <IonInput
+                placeholder="Nombre descriptivo"
                 value={nombre} 
                 onIonChange={(e: any) => setNombre(e.target.value)}>
               </IonInput>
             </IonItem>
-            <IonItemDivider>Cupo</IonItemDivider>
             <IonItem>
               <IonInput
+                placeholder="Cupo"
                 value={cupo} 
                 onIonChange={(e: any) => setCupo(e.target.value)}>
               </IonInput>
             </IonItem>
-            <IonItemDivider>Dia facturación</IonItemDivider>
             <IonItem>
               <IonInput
+                placeholder="Día de facturación"
                 value={dia} 
                 onIonChange={(e: any) => setDia(e.target.value)}>
               </IonInput>
             </IonItem>
-            <section>
-              <IonButton expand="block" onClick={agregar}>Guardar</IonButton>
-            </section>
+            <IonButton color="success" expand="block" onClick={agregar}>Agregar</IonButton>
           </IonList>
           <IonToast
             isOpen={showtoast}
@@ -62,7 +60,7 @@ const IngresoTarjeta: React.FC = () => {
             message={mensaje}
             duration={500}
           />
-      </>
+      </IonContent>
   );
 };
 

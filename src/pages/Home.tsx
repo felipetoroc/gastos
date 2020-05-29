@@ -27,7 +27,7 @@ const Home: React.FC = () => {
                 cuotas:doc.data().mov_cuotas,
                 descripcion:doc.data().mov_descripcion,
                 ano:splitFecha2[0],
-                fecha:splitFecha2[1]+"-"+splitFecha2[2]+"-"+splitFecha2[0],
+                fecha:splitFecha2[0]+"-"+splitFecha2[1]+"-"+splitFecha2[2],
                 monto:doc.data().mov_monto,
                 periodo:doc.data().mov_periodo,
                 frecuencia:doc.data().mov_frec_mov,
