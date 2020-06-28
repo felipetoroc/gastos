@@ -1,4 +1,4 @@
-import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonRow,IonCol,IonLoading, IonGrid, IonLabel } from '@ionic/react';
+import {IonFab, IonFabButton, IonIcon, IonPopover,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList,IonLabel } from '@ionic/react';
 import React, {useState,useEffect,useContext} from 'react';
 import './Fijos.css';
 import {db,eliminar} from '../firebaseConfig'
@@ -7,26 +7,13 @@ import IngresoGastoFijo from '../components/IngresoGastoFijo'
 import {UserContext} from '../App'
 
 const Fijos: React.FC = () => {
-  const listaVacia = [] as any[]
-  const [total, setTotal] = useState(0)
-  const [listaGastoFijo,setListaGastoFijo] = useState(listaVacia);
-  const [popover, setPopover] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
+  const [listaGastoFijo,setListaGastoFijo] = useState([] as any[]);
   const [showPopover, setShowPopover] = useState(false);
   const user = useContext(UserContext)
 
   useEffect(() => {
-    db.collection("usersData").doc(user.uid).collection("gastos_fijos").onSnapshot((querySnapshot) => {
-        var sumaTotal = 0
-        querySnapshot.forEach(doc => {
-          sumaTotal += parseFloat(doc.data().monto)
-        });
-        setTotal(sumaTotal)
-    })
-  },[])
-
-  useEffect(() => {
     db.collection("usersData").doc(user.uid).collection("gastos_fijos").orderBy("descripcion").onSnapshot((querySnapshot) => {
-        setListaGastoFijo(listaVacia)
+        setListaGastoFijo([])
         querySnapshot.forEach(doc => {
             var objeto = {id:doc.id,descripcion:doc.data().descripcion,monto:doc.data().monto}
             setListaGastoFijo(prevListaGasto => [...prevListaGasto, objeto]);
@@ -53,7 +40,7 @@ const Fijos: React.FC = () => {
             <IonList>
                 <IonItem>
                     <IonLabel><b>Total gastos fijos:</b> </IonLabel>
-                    <IonLabel slot="end" color="danger">-${total}</IonLabel>
+                    <IonLabel slot="end" color="danger">-${listaGastoFijo.reduce((a:any,b:any) => (a+parseInt(b.monto)),0)}</IonLabel>
                 </IonItem>
             </IonList>
             <IonList>

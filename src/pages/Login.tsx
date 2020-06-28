@@ -1,4 +1,4 @@
-import {IonPage,IonToolbar,IonTitle,IonHeader,IonContent,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonCard, IonLabel } from '@ionic/react';
+import {IonPage,IonToolbar,IonTitle,IonHeader,IonContent, IonList, IonButton, IonItem, IonInput, IonCard, IonLabel } from '@ionic/react';
 import React , {useState,useContext} from 'react';
 import './Login.css';
 import {login} from '../firebaseConfig'
@@ -9,7 +9,6 @@ const Login: React.FC = () => {
   const [correo,setCorreo] = useState('');
   const [password,setPassword] = useState('');
   const [error,setError] = useState('')
-  const user = useContext(UserContext)
   const history = useHistory()
 
   async function loginUser(){

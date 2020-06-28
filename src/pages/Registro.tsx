@@ -1,4 +1,4 @@
-import {IonAlert,IonIcon,IonPage,IonToolbar,IonTitle,IonHeader,IonContent,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonCard, IonLabel, IonText, NavContext } from '@ionic/react';
+import {IonAlert,IonIcon,IonPage,IonToolbar,IonTitle,IonHeader,IonContent, IonList, IonButton, IonItem, IonInput, IonCard, IonLabel } from '@ionic/react';
 import React , {useState, useEffect} from 'react';
 import {useHistory} from 'react-router-dom'
 import './Registro.css';

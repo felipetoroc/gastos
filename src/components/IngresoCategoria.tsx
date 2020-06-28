@@ -1,5 +1,5 @@
-import {IonGrid,IonRow,IonCol,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonContent } from '@ionic/react';
-import React , {useState,useContext, useEffect} from 'react';
+import {IonGrid,IonRow,IonCol,IonToast, IonButton, IonInput, IonContent } from '@ionic/react';
+import React , {useState,useContext} from 'react';
 import './IngresoCategoria.css';
 import {agregar} from '../firebaseConfig'
 import {UserContext} from '../App'
@@ -23,6 +23,7 @@ const IngresoCategoria: React.FC = () => {
     setShowtoast(true)
     setMensaje("Categoría guardada");
     setTexto('')
+    console.log(docid)
   };
 
   return (

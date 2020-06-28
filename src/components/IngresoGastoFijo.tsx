@@ -1,4 +1,4 @@
-import {IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput, IonContent } from '@ionic/react';
+import {IonToast,IonList, IonButton, IonItem, IonInput, IonContent } from '@ionic/react';
 import React , {useState,useContext} from 'react';
 import './IngresoGastoFijo.css';
 import {agregar} from '../firebaseConfig'
@@ -17,7 +17,7 @@ const IngresoGastoFijo: React.FC = () => {
     setMensaje("Gasto fijo ingresado correctamente");
     setMonto('')
     setTexto('')
-
+    console.log(docid)
   };
 
   return (

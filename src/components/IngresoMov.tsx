@@ -1,5 +1,5 @@
-import {IonLabel,IonGrid,IonRow,IonCol,IonContent,IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast, IonButton,  IonInput, IonTitle, IonSelect } from '@ionic/react';
-import React , {useState,useEffect,useContext,useReducer} from 'react';
+import {IonGrid,IonRow,IonCol,IonContent,IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast, IonButton,  IonInput, IonTitle, IonSelect } from '@ionic/react';
+import React , {useState,useEffect,useContext} from 'react';
 import './IngresoMov.css';
 import {add} from 'ionicons/icons';
 import {db,agregar} from '../firebaseConfig'
@@ -30,6 +30,25 @@ const IngresoMov: React.FC = () => {
   const [popoverCate, setPopoverCate] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
+  
+
+  useEffect(() => {
+    db.collection("usersData").doc(user.uid).collection("tarjetas").onSnapshot((qTarjetas) => {
+      db.collection("usersData").doc(user.uid).collection("categorias").orderBy("nombre_categoria").onSnapshot((qCategorias) => {
+        setListaTarjetas(listaVacia)
+        setListaCategoria(listaVacia)
+        qTarjetas.forEach(doc => {
+            var objeto = {nombre:doc.data().tarjeta_nombre,cupo:doc.data().tarjeta_cupo,dia:doc.data().tarjeta_dia_f}
+            setListaTarjetas(prevListaTarjeta => [...prevListaTarjeta, objeto]);
+        });
+        qCategorias.forEach(doc => {
+          var objeto = {nombre:doc.data().nombre_categoria}
+          setListaCategoria(prevListaCategoria => [...prevListaCategoria, objeto]);
+        });
+      })
+    })
+  },[])
+
   useEffect(()=>{
     if(tipoMoneda === "efectivo"){
       setCuotas('1')
@@ -40,24 +59,6 @@ const IngresoMov: React.FC = () => {
       setCuotas('1')
     }
   },[tipoMoneda,tipoMovimiento])
-
-  useEffect(() => {
-    db.collection("usersData").doc(user.uid).collection("tarjetas").onSnapshot((querySnapshot) => {
-      setListaTarjetas(listaVacia)
-      querySnapshot.forEach(doc => {
-          var objeto = {nombre:doc.data().tarjeta_nombre,cupo:doc.data().tarjeta_cupo,dia:doc.data().tarjeta_dia_f}
-          setListaTarjetas(prevListaTarjeta => [...prevListaTarjeta, objeto]);
-      });
-    })
-    db.collection("usersData").doc(user.uid).collection("categorias").orderBy("nombre_categoria").onSnapshot((querySnapshot) => {
-      setListaCategoria(listaVacia)
-      querySnapshot.forEach(doc => {
-          var objeto = {nombre:doc.data().nombre_categoria}
-          setListaCategoria(prevListaCategoria => [...prevListaCategoria, objeto]);
-      });
-    })
-  },[])
-
   
   const agregarGasto = () => {
 
@@ -159,7 +160,7 @@ const IngresoMov: React.FC = () => {
                   className="inputTextos"
                   placeholder="Descripcion movimiento"
                   value={descripcion} 
-                  onIonChange={(e: any) => setDescripcion(e.target.value)}>
+                  onIonChange={(e:any) => {setDescripcion(e.target.value)}}>
                 </IonInput>
           </IonCol>
         </IonRow>

@@ -49,6 +49,7 @@ export const auth = firebase.auth()
 export const db = firebase.firestore()
 
 export function eliminar(id: string ,coleccion: string,uid:string) {
+  console.log("eliminar"+id)
   db.collection("usersData").doc(uid).collection(coleccion).doc(id).delete();
 }
 

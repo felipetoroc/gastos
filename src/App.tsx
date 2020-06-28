@@ -1,9 +1,8 @@
-import React,{useState, useEffect,useContext} from 'react';
-import { Redirect, Route} from 'react-router-dom';
-import {IonProgressBar,IonButton, IonApp, IonRouterOutlet, IonButtons, IonMenuButton, IonIcon, IonToolbar } from '@ionic/react';
+import React,{useState, useEffect} from 'react';
+import { Route} from 'react-router-dom';
+import {IonProgressBar, IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import {auth,agregar,db,actualizar} from './firebaseConfig';
-import {getPeriodos} from './pages/Resumen'
+import {auth,db} from './firebaseConfig';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -23,7 +22,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
 /* Paginas */
-import Home from './pages/Home';
+
 import Menu from './components/Menu';
 import Resumen from './pages/Resumen';
 import Mantenedor from './pages/Mantenedor';
@@ -31,6 +30,7 @@ import Fijos from './pages/Fijos';
 import Categorias from './pages/Categorias'
 import Login from './pages/Login'
 import Registro from './pages/Registro'
+import Movimientos from './pages/Movimientos';
 
 /* Componentes */
 import NavigationBar from './components/NavigationBar'
@@ -38,19 +38,6 @@ import NavigationBar from './components/NavigationBar'
 
 /* Theme variables 
 import './theme/variables.css';*/
-
-const RoutingSystemPrimerInicio: React.FC = () => {
-
-  return(
-    <IonReactRouter>
-      <IonRouterOutlet id="main">
-        <Route path="/Login" component={Login} exact />
-        <Route path="/Registro" component={Registro} exact />
-        <Route path="/" component={Login}></Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  )
-}
 
 const RoutingSystemLogout: React.FC = () => {
 
@@ -72,7 +59,7 @@ const RoutingSystemLogin: React.FC = () => {
       <Menu></Menu>
       <NavigationBar/>
       <IonRouterOutlet id="main">
-        <Route path="/Home" component={Home} exact />
+        <Route path="/Movimientos" component={Movimientos} exact />
         <Route path="/Resumen" component={Resumen} exact />
         <Route path="/Mantenedor" component={Mantenedor} exact />
         <Route path="/Fijos" component={Fijos} exact />
@@ -96,10 +83,11 @@ const App: React.FC = () => {
       if(user){
           setUserData({email:user.email,uid:user.uid})
           setLogedIn(true)
+          setBusy(false) 
       }else{
         setLogedIn(false)
+        setBusy(false)
       }
-      setBusy(false)
     });
   },[])
   

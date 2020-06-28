@@ -1,8 +1,8 @@
-import {IonIcon,IonButtons,IonText,IonLabel,IonHeader, IonContent,IonToolbar, IonTitle, IonPage,IonToast,IonItemDivider, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
+import {IonIcon,IonButtons,IonLabel,IonHeader, IonContent,IonToolbar, IonTitle, IonPage,IonToast, IonList, IonButton, IonItem, IonInput } from '@ionic/react';
 import React , {useState,useEffect,useContext} from 'react';
 import './Mantenedor.css';
 import {db,agregar,actualizar} from '../firebaseConfig'
-import { add,play ,caretBack} from 'ionicons/icons';
+import {play} from 'ionicons/icons';
 import {UserContext} from '../App'
 
 
@@ -27,7 +27,7 @@ const Mantenedor: React.FC = () => {
         }, (error) => {
             console.log(error)
         })
-      },[])
+    },[])
 
     const agregarDatos = () => {
         if(!idDoc){
@@ -58,29 +58,26 @@ const Mantenedor: React.FC = () => {
                 <IonHeader>
                     <IonToolbar>
                         <IonLabel>Información importante</IonLabel>
-                        <IonButtons slot="end">
-                            Listado de categorias<IonButton routerLink="/Categorias"><IonIcon icon={play} /></IonButton>
-                        </IonButtons>
                     </IonToolbar>
                 </IonHeader>
                 <IonList>
+                    {/*<IonItem>
+                        <IonLabel>Sueldo</IonLabel>
+                        <IonInput slot="end"
+                            value={sueldo} 
+                            onIonChange={(e: any) => setSueldo(e.target.value)}>
+                        </IonInput>
+                    </IonItem>*/}
                     <IonItem>
-                    <IonLabel>Sueldo</IonLabel>
-                    <IonInput slot="end"
-                        value={sueldo} 
-                        onIonChange={(e: any) => setSueldo(e.target.value)}>
-                    </IonInput>
-                    </IonItem>
-                    <IonItem>
-                    <IonLabel>Dia de pago</IonLabel>
-                    <IonInput
-                        value={pago} 
-                        onIonChange={(e: any) => setPago(e.target.value)}>
-                    </IonInput>
+                        <IonLabel>Dia de pago</IonLabel>
+                        <IonInput
+                            value={pago} 
+                            onIonChange={(e: any) => setPago(e.target.value)}>
+                        </IonInput>
                     </IonItem>
                     
                     <section>
-                    <IonButton expand="block" onClick={agregarDatos}>Guardar</IonButton>
+                        <IonButton expand="block" onClick={agregarDatos}>Guardar</IonButton>
                     </section>
                 </IonList>
                 <IonToast
