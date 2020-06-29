@@ -12,6 +12,7 @@ const Mantenedor: React.FC = () => {
     const [sueldo,setSueldo] = useState('');
     const [pago,setPago] = useState('');
     const [idDoc,setIdDoc] = useState<any>();
+    const [pptVariable, setPptVariable] = useState('')
 
     const user = useContext(UserContext)
 
@@ -22,6 +23,7 @@ const Mantenedor: React.FC = () => {
                     setSueldo(doc.data().monto_sueldo)
                     setPago(doc.data().dia_pago)
                     setIdDoc(doc.id)
+                    setPptVariable(doc.data().ppt_variable)
                 }
             });
         }, (error) => {
@@ -34,6 +36,7 @@ const Mantenedor: React.FC = () => {
             var docid = agregar({
                 monto_sueldo: sueldo,
                 dia_pago: pago,
+                ppt_variable: pptVariable
             },"info_importante",user.uid);
             setShowtoast(true)
             setIdDoc(docid);
@@ -41,6 +44,7 @@ const Mantenedor: React.FC = () => {
             actualizar({
                 monto_sueldo: sueldo,
                 dia_pago: pago,
+                ppt_variable: pptVariable
             },"info_importante",idDoc,user.uid);
             setShowtoast(true)
         }
@@ -75,7 +79,13 @@ const Mantenedor: React.FC = () => {
                             onIonChange={(e: any) => setPago(e.target.value)}>
                         </IonInput>
                     </IonItem>
-                    
+                    <IonItem>
+                        <IonLabel>Presupuesto gasto variable</IonLabel>
+                        <IonInput
+                            value={pptVariable} 
+                            onIonChange={(e: any) => setPptVariable(e.target.value)}>
+                        </IonInput>
+                    </IonItem>
                     <section>
                         <IonButton expand="block" onClick={agregarDatos}>Guardar</IonButton>
                     </section>

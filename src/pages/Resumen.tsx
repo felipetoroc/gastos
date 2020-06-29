@@ -9,9 +9,9 @@ const Resumen: React.FC = () => {
     const user = useContext(UserContext)
     const [tarjetas, setTarjetas] = useState<any>([])
     const [totalFijos, setTotalFijos] = useState(0)
+    const [pptVariable, setPptVariable] = useState('')
 
     const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1)
-
 
     const [gefectivof, setGefectivof] = useState(0)
     const [gefectivov, setGefectivov] = useState(0)
@@ -30,6 +30,7 @@ const Resumen: React.FC = () => {
                     setTarjetas([])
                     if(q.empty === false){
                         setDiapago(q.docs[0].data().dia_pago) 
+                        setPptVariable(q.docs[0].data().ppt_variable)
                     }
                     qTarjetas.forEach(doc => {
                         var objeto = {nombre:doc.data().tarjeta_nombre}
@@ -180,7 +181,7 @@ const Resumen: React.FC = () => {
                         <IonLabel><b>Gastos Variables</b></IonLabel>
                     </IonItem>
                     <IonItem>
-                        <IonLabel>Presupuesto:  {360000}</IonLabel>
+                        <IonLabel>Presupuesto:  {pptVariable}</IonLabel>
                         <IonLabel slot="end" className="datos">Real:  {gefectivov+gTarjetasv.reduce((a:number,b:any) => {return a+b.suma},0)}</IonLabel>
                     </IonItem>
                 </IonList>
