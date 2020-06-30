@@ -14,16 +14,30 @@ export const agregarCategoria = (nombre: string,uid:string) =>{
 
 const IngresoCategoria: React.FC = () => {
   const [mensaje,setMensaje] = useState('');
+  const [mensajeError,setMensajeError] = useState('');
   const [texto,setTexto] = useState('');
   const [showtoast,setShowtoast] = useState(false)
   const user = useContext(UserContext)
 
+  function validarCampos(){
+    if(texto === ''){
+      return 1;
+    }else{
+      return 0;
+      
+    }
+  }
+
   const agregar = () => {
-    const docid = agregarCategoria(texto,user.uid);
-    setShowtoast(true)
-    setMensaje("Categoría guardada");
-    setTexto('')
-    console.log(docid)
+    if(validarCampos()===0){
+      const docid = agregarCategoria(texto,user.uid);
+      setShowtoast(true)
+      setMensaje("Categoría guardada");
+      setTexto('')
+      console.log(docid)
+    }else{
+      setMensajeError("Nombre no puede estar vacío")
+    }
   };
 
   return (
@@ -32,7 +46,7 @@ const IngresoCategoria: React.FC = () => {
         <IonRow>
           <IonCol>
             <IonInput
-              placeholder="Ingresa un nombre"
+              placeholder={mensajeError!==''?mensajeError:"Ingresa un nombre"}
               value={texto} 
               onIonChange={(e: any) => setTexto(e.target.value)}>
             </IonInput>

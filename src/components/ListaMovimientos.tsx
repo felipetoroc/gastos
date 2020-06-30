@@ -7,14 +7,13 @@ import {usePeriodo} from '../hooks/usePeriodo'
 import DetalleMovimiento from './DetalleMovimiento';
 
 
-const ListaMovimientos: React.FC<any> = () => {
+const ListaMovimientos: React.FC<any> = (props) => {
     const user = useContext(UserContext)
 
     const [listaMov, setListaMov] = useState([] as any[]);
     const [selected, setSelected] = useState()
 
     const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1)
-
     const [popoverDetails, setPopoverDetails] = useState(false);
 
     useEffect(()=>{
@@ -47,7 +46,13 @@ const ListaMovimientos: React.FC<any> = () => {
                     tipo_moneda:doc.data().mov_tipo_moneda,
                     tipo_movimiento:doc.data().mov_tipo_mov
                 }
-                setListaMov(prev => [...prev,objeto])
+                if(typeof props.data !== "undefined"){
+                    if(objeto.tipo_moneda === props.data.tarjeta.nombre){
+                        setListaMov(prev => [...prev,objeto])
+                    }
+                }else{
+                    setListaMov(prev => [...prev,objeto])
+                }
               }
             })
             
@@ -60,7 +65,6 @@ const ListaMovimientos: React.FC<any> = () => {
 
     return (
         <>
-            
             <IonItem>
                 <IonLabel>Periodo: desde <b>{fechaIni.toLocaleDateString()}</b> hasta <b>{fechaFin.toLocaleDateString()}</b></IonLabel>
             </IonItem>

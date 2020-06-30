@@ -31,6 +31,7 @@ import Categorias from './pages/Categorias'
 import Login from './pages/Login'
 import Registro from './pages/Registro'
 import Movimientos from './pages/Movimientos';
+import Tarjetas from './pages/Tarjetas'
 
 /* Componentes */
 import NavigationBar from './components/NavigationBar'
@@ -64,6 +65,7 @@ const RoutingSystemLogin: React.FC = () => {
         <Route path="/Mantenedor" component={Mantenedor} exact />
         <Route path="/Fijos" component={Fijos} exact />
         <Route path="/Categorias" component={Categorias} exact />
+        <Route path="/Tarjetas" component={Tarjetas} exact />
         <Route path="/" component={Resumen}></Route>
       </IonRouterOutlet>
     </IonReactRouter>

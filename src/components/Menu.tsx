@@ -38,6 +38,9 @@ const Menu: React.FC = () => {
                     <IonItem routerLink="/Categorias" routerDirection="none" lines="none" >
                         <IonLabel>Categorias</IonLabel>
                     </IonItem>
+                    <IonItem routerLink="/Tarjetas" routerDirection="none" lines="none" >
+                        <IonLabel>Tarjetas</IonLabel>
+                    </IonItem>
                     <IonItem routerLink="/Mantenedor" routerDirection="none" lines="none" >
                         <IonLabel>Configuración</IonLabel>
                     </IonItem>

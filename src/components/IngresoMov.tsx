@@ -1,4 +1,4 @@
-import {IonGrid,IonRow,IonCol,IonContent,IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast, IonButton,  IonInput, IonTitle, IonSelect } from '@ionic/react';
+import {IonGrid,IonRow,IonCol,IonContent,IonPopover,IonButtons,IonIcon,IonSelectOption,IonDatetime,IonToast, IonButton,  IonInput, IonTitle, IonSelect, IonLabel } from '@ionic/react';
 import React , {useState,useEffect,useContext} from 'react';
 import './IngresoMov.css';
 import {add} from 'ionicons/icons';
@@ -26,6 +26,7 @@ const IngresoMov: React.FC = () => {
   const [categoria, setCategoria] = useState('')
 
   const [mensaje,setMensaje] = useState('');
+  const [mensajeError, setMensajeError] = useState('')
   const [showtoast,setShowtoast] = useState(false)
   const [popoverCate, setPopoverCate] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
   const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
@@ -60,36 +61,72 @@ const IngresoMov: React.FC = () => {
     }
   },[tipoMoneda,tipoMovimiento])
   
-  const agregarGasto = () => {
-
-    for(var i=0;i<parseInt(cuotas);i++){
-      var montoCuota = parseInt(monto)/parseInt(cuotas)
-      var nuevaFecha = new Date(fecha)
-      nuevaFecha = new Date(nuevaFecha.setMonth(nuevaFecha.getMonth()+i))
-      var nuevaCuota = parseInt(cuotas)-i
-      const id = agregar(
-      {
-        mov_fecha: nuevaFecha.toISOString(),
-        mov_cuotas: nuevaCuota.toString(),
-        mov_tipo_moneda: tipoMoneda,
-        mov_frec_mov: frecMov,
-        mov_tipo_mov: tipoMovimiento,
-        mov_descripcion: descripcion,
-        mov_monto: montoCuota.toString(),
-        mov_categoria: categoria
-      },"movimientos",user.uid);
+  function validarCampos(){
+    if(fecha === '' ||
+      cuotas  === '' ||
+      tipoMoneda  === '' ||
+      frecMov  === '' ||
+      tipoMovimiento  === '' ||
+      descripcion === '' ||
+      monto === '' ||
+      categoria === ''){
+        return 1;
+    }else{
+      if(Number.isInteger(parseInt(monto)) === false){
+        return 2;
+      }else{
+        if(Number.isInteger(parseInt(cuotas)) === false){
+          return 3;
+        }else{
+          return 0;
+        }
+      }
     }
-    
-    setShowtoast(true)
-    setFecha(new Date().toISOString())
-    setCuotas('')
-    setTipoMoneda('')
-    setFrecMov('')
-    setTipoMovimiento('')
-    setCategoria('')
-    setDescripcion('')
-    setMonto('')
-    setMensaje("Movimiento ingresado");
+  }
+
+  const agregarGasto = () => {
+    if(validarCampos() === 0){
+      for(var i=0;i<parseInt(cuotas);i++){
+        var montoCuota = parseInt(monto)/parseInt(cuotas)
+        var nuevaFecha = new Date(fecha)
+        nuevaFecha = new Date(nuevaFecha.setMonth(nuevaFecha.getMonth()+i))
+        var nuevaCuota = parseInt(cuotas)-i
+        const id = agregar(
+        {
+          mov_fecha: nuevaFecha.toISOString(),
+          mov_cuotas: nuevaCuota.toString(),
+          mov_tipo_moneda: tipoMoneda,
+          mov_frec_mov: frecMov,
+          mov_tipo_mov: tipoMovimiento,
+          mov_descripcion: descripcion,
+          mov_monto: montoCuota.toString(),
+          mov_categoria: categoria
+        },"movimientos",user.uid);
+      }
+      
+      setShowtoast(true)
+      setFecha(new Date().toISOString())
+      setCuotas('')
+      setTipoMoneda('')
+      setFrecMov('')
+      setTipoMovimiento('')
+      setCategoria('')
+      setDescripcion('')
+      setMonto('')
+      setMensaje("Movimiento ingresado");
+    }else{
+      switch(validarCampos()){
+        case 1:
+          setMensajeError("Faltan Datos")
+          break
+        case 2:
+          setMensajeError("Monto debe ser numérico")
+          break
+        case 3:
+          setMensajeError("Cuotas debe ser numérico")
+          break
+      }
+    }
   };
 
   return (
@@ -97,9 +134,13 @@ const IngresoMov: React.FC = () => {
       <IonGrid>
         <IonRow>
           <IonCol>
+            <IonLabel color="danger">{mensajeError}</IonLabel>  
+          </IonCol>
+        </IonRow>
+        <IonRow>
+          <IonCol>
             <IonTitle><IonDatetime placeholder="Fecha" displayFormat="YYYY-MM-DD" value={fecha} onIonChange={(e: any) => {setFecha(e.detail.value!)}}></IonDatetime>
             </IonTitle>
-                     
           </IonCol>
         </IonRow>
         <IonRow>
