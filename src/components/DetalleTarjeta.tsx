@@ -17,7 +17,7 @@ const DetalleTarjeta: React.FC<any> = (props) => {
     });
     const [listaMov, setListaMov] = useState([] as any[])
     const user = useContext(UserContext)
-    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1)
+    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1,0)
     const [popoverTar, setPopoverTar] = useState<{show: boolean, evento: Event | undefined}>({show: false, evento: undefined});
 
     useEffect(()=>{

@@ -15,7 +15,7 @@ const Categorias: React.FC = () => {
   const [nombre, setNombre] = useState('')
   const user = useContext(UserContext)
 
-  const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1)
+  const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1,0)
 
 
     useEffect(() => {

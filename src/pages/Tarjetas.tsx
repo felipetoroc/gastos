@@ -1,10 +1,11 @@
-import {IonButton,IonModal,IonItem,IonList, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonLabel} from '@ionic/react';
+import {IonButton,IonModal,IonItem,IonList, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonLabel, IonIcon} from '@ionic/react';
 import React, {useState,useEffect,useContext} from 'react';
 import './Tarjetas.css';
 import {db} from '../firebaseConfig'
 import {UserContext} from '../App'
 import DetalleTarjeta from '../components/DetalleTarjeta';
 import ListaMovimientos from '../components/ListaMovimientos';
+import {listOutline } from 'ionicons/icons';
 
 const Tarjetas: React.FC = () => {
   
@@ -40,12 +41,13 @@ const Tarjetas: React.FC = () => {
             
             <IonList>
                 {lista.map((tarjeta,i) => (
-                    <IonList key={i} onClick={() => {setShowModal(true);setSelected(tarjeta)}}>
+                    <IonList key={i}>
+                        <IonButton onClick={() => {setShowModal(true);setSelected(tarjeta)}}><IonIcon icon={listOutline}/></IonButton>
                         <DetalleTarjeta  data={{tarjeta:{id:tarjeta.id,nombre:tarjeta.nombre,cupo:tarjeta.cupo,dia:tarjeta.dia}}}/>
                     </IonList>
                 ))}
             </IonList>
-            <IonModal isOpen={showModal} cssClass='my-custom-class'>
+            <IonModal isOpen={showModal}>
             <IonButton onClick={() => setShowModal(false)}>Close Modal</IonButton>
                 <IonContent>
                     <ListaMovimientos data={{tarjeta:selected}}/>

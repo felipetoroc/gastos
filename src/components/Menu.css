@@ -1,5 +1,5 @@
-
 .menu ion-toolbar{
     --ion-background-color:grey;
     --ion-text-color:white;
+    --min-width: 100%;
 }

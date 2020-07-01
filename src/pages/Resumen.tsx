@@ -11,7 +11,7 @@ const Resumen: React.FC = () => {
     const [totalFijos, setTotalFijos] = useState(0)
     const [pptVariable, setPptVariable] = useState('')
 
-    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1)
+    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1,0)
 
     const [gefectivof, setGefectivof] = useState(0)
     const [gefectivov, setGefectivov] = useState(0)
