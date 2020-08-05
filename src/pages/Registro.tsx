@@ -62,6 +62,7 @@ const Registro: React.FC = () => {
             <IonList>
                 <IonItem>
                 <IonInput
+                    type="email"
                     placeholder="Correo"
                     value={correo} 
                     onIonChange={(e: any) => setCorreo(e.target.value)}>

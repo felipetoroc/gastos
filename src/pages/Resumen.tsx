@@ -1,9 +1,10 @@
-import {IonItem,IonList, IonPage,IonHeader,IonToolbar,IonTitle,IonContent, IonLabel} from '@ionic/react';
+import {IonButton,IonItem,IonList, IonPage,IonHeader,IonToolbar,IonTitle,IonContent, IonLabel, IonIcon} from '@ionic/react';
 import React, {useState,useEffect,useContext} from 'react';
 import './Resumen.css';
 import {db} from '../firebaseConfig'
 import {UserContext} from '../App'
 import {usePeriodo} from '../hooks/usePeriodo'
+import { arrowBack, arrowForward } from 'ionicons/icons';
 
 const Resumen: React.FC = () => {
     const user = useContext(UserContext)
@@ -11,7 +12,8 @@ const Resumen: React.FC = () => {
     const [totalFijos, setTotalFijos] = useState(0)
     const [pptVariable, setPptVariable] = useState('')
 
-    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago] = usePeriodo(1,0)
+    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago,setNumPeriodo] = usePeriodo(1,1)
+    const [contPeriodo, setContPeriodo] = useState(0)
 
     const [gefectivof, setGefectivof] = useState(0)
     const [gefectivov, setGefectivov] = useState(0)
@@ -61,7 +63,8 @@ const Resumen: React.FC = () => {
                     var otrosGastosv = [] as any[]
                     var otrosIngresosf = [] as any[]
                     var otrosIngresosv = [] as any[]
-                
+                    
+                    
                     querySnapshot.forEach(doc => {
                         var fechaMov = new Date(doc.data().mov_fecha)
                         var fechaMovFormat = new Date(fechaMov.getFullYear(),fechaMov.getMonth(),fechaMov.getDate())
@@ -130,10 +133,11 @@ const Resumen: React.FC = () => {
                             setItarjetasv((prev:any) => [...prev, {nombre: doc.data().tarjeta_nombre, suma:sum4}])
                         });
                     }
+                    
                 })
             
         })
-      },[diapago])
+      },[diapago,contPeriodo])
 
     return (
         <IonPage className="resumen">
@@ -150,9 +154,11 @@ const Resumen: React.FC = () => {
                 </IonHeader>
                 
                 <IonList>
-                    <IonItem>
-                        <IonLabel>Periodo: desde <b>{fechaIni.toLocaleDateString()}</b> hasta <b>{fechaFin.toLocaleDateString()}</b></IonLabel>
-                    </IonItem>
+                <IonItem lines="none">
+                    <IonButton color="warning" onClick={() => setContPeriodo(contPeriodo-1)} slot="start"><IonIcon icon={arrowBack} /></IonButton>
+                    <IonLabel><b>{fechaIni.toLocaleDateString()}</b> hasta <b>{fechaFin.toLocaleDateString()}</b></IonLabel>
+                    <IonButton color="warning" onClick={() => setContPeriodo(contPeriodo+1)} slot="end"><IonIcon icon={arrowForward} /></IonButton>
+                </IonItem>
                 </IonList>
                 <IonList>
                     <IonItem>

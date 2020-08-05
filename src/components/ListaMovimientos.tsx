@@ -1,10 +1,11 @@
-import {IonButton,IonPopover,IonLabel,IonItem,IonItemOption,IonItemOptions,IonItemSliding} from '@ionic/react';
+import {IonList,IonButton,IonPopover,IonLabel,IonItem,IonItemOption,IonItemOptions,IonItemSliding, IonIcon} from '@ionic/react';
 import React, {useState,useEffect, useContext} from 'react';
 import './ListaMovimientos.css';
 import {db,eliminar} from '../firebaseConfig'
 import {UserContext} from '../App'
 import {usePeriodo} from '../hooks/usePeriodo'
 import DetalleMovimiento from './DetalleMovimiento';
+import { arrowBack, arrowForward } from 'ionicons/icons';
 
 
 const ListaMovimientos: React.FC<any> = (props) => {
@@ -14,13 +15,12 @@ const ListaMovimientos: React.FC<any> = (props) => {
     const [selected, setSelected] = useState()
 
     const [contPeriodo,setContPeriodo] = useState(0)
-    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago,setNumPeriodo] = usePeriodo(1,1)
+    const [diapago,fechaPago, fechaIni, fechaFin,setDiapago,setNumPeriodo] = usePeriodo(1,0)
     
     const [popoverDetails, setPopoverDetails] = useState(false);
 
     useEffect(() =>{
         setNumPeriodo(contPeriodo)
-        console.log(contPeriodo)
     },[contPeriodo])
 
     useEffect(()=>{
@@ -67,11 +67,13 @@ const ListaMovimientos: React.FC<any> = (props) => {
 
     return (
         <>
+            
             <IonItem>
-                <IonButton color="warning" onClick={() => setContPeriodo(contPeriodo-1)} slot="start">Anterior</IonButton>
-                <IonLabel>Periodo: desde <b>{fechaIni.toLocaleDateString()}</b> hasta <b>{fechaFin.toLocaleDateString()}</b></IonLabel>
-                <IonButton color="warning" onClick={() => setContPeriodo(contPeriodo+1)} slot="end">Siguiente</IonButton>
+                <IonButton color="warning" onClick={() => setContPeriodo(contPeriodo-1)} slot="start"><IonIcon icon={arrowBack} /></IonButton>
+                <IonLabel><b>{fechaIni.toLocaleDateString()}</b> hasta <b>{fechaFin.toLocaleDateString()}</b></IonLabel>
+                <IonButton color="warning" onClick={() => setContPeriodo(contPeriodo+1)} slot="end"><IonIcon icon={arrowForward} /></IonButton>
             </IonItem>
+            
             <IonItem>
                 <IonLabel>Total</IonLabel>
                 <IonLabel slot="end">
